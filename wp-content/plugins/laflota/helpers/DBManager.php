@@ -318,7 +318,7 @@ abstract class DBManager{
         }
     }
 
-    protected function updateRecord($entity, $newRecord, $filters, $validate = null){
+    protected function updateRecord($entity, $newRecord, $filters, $validate = null, $check = null){
         if ( ! is_array( $newRecord ) || ! is_array( $filters ))
             return false;
         $edit = true;
@@ -326,6 +326,9 @@ abstract class DBManager{
         $auditData = array();
         $PK = array();
 
+        if ( is_array( $check ))
+            $updateData = $check;
+        
         $currentRecord = $this->getCurrentRecord($entity, $filters);
 
         if(is_array( $validate ) && array_key_exists("columnValidateEdit", $validate))

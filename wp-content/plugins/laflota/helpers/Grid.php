@@ -28,6 +28,7 @@ class Grid extends DBManager
             $this->params = $p;
             $this->loc = $resource;
             $this->type = $y;
+            $this->params["sortorder"] = (array_key_exists('sortorder', $this->params) )?$this->params["sortorder"]:"asc";
             parent::__construct();
             if($type == "table"){
                 require_once $this->pluginPath."/models/".$v."Model.php";
@@ -488,7 +489,7 @@ class Grid extends DBManager
                                     pager: "#' . $this->view . 'Pager",						
                                     sortname: "'. $this->params["sortname"].'",
                                     viewrecords: true,
-                                    sortorder: "desc",
+                                    sortorder: "'. $this->params["sortorder"].'",
                                     viewrecords: true,
                                     gridview: true,
                                     height: "100%",

@@ -110,6 +110,13 @@ class clientes extends DBManagerModel{
                                       LEFT JOIN ". $this->pluginPrefix ."ciudades c ON u.ciudad = c.ciudad
                                 WHERE c.ciudadId IS NULL
                                 GROUP BY u.ciudad"; break;
+            case "tipomotor":
+                    $query = "INSERT INTO `". $this->pluginPrefix ."tipoMotor`(`tipoMotor`)
+                                SELECT u.tipomotor 
+                                FROM ". $this->pluginPrefix ."clientesUploadTmp u
+                                          LEFT JOIN ". $this->pluginPrefix ."tipoMotor t ON u.tipomotor = t.tipoMotor
+                                WHERE t.tipoMotorId IS NULL
+                                GROUP BY u.tipomotor"; break; 
             case "tipousuario":
                     $query = "INSERT INTO `". $this->pluginPrefix ."tipousuario`(`tipoUsuario`)
                                 SELECT u.tipousuario 
@@ -176,6 +183,23 @@ class clientes extends DBManagerModel{
                                 c.`date_entered` = d.date_entered,
                                 c.`created_by` = d.created_by,
                                 c.`md5` = d.md5";break;
+            case "vehiculos": 
+                $query = "INSERT INTO `laflota`.`wp_lf_vehiculos`
+                            (`clienteId`,
+                            `placa`,
+                            `tipoMotorId`,
+                            `md5`)
+                            SELECT clienteId, u.placa, tipoMotorId, MD5(CONCAT(clienteId, u.placa, tipoMotorId))
+                            FROM ". $this->pluginPrefix ."clientesUploadTmp u
+                                            JOIN (
+                                                    SELECT MAX(ut.clientesUploadId) clientesUploadId
+                                                    FROM ". $this->pluginPrefix ."clientesUploadTmp ut
+                                                                                    LEFT JOIN ". $this->pluginPrefix ."vehiculos v ON v.placa = ut.placa
+                                                    WHERE v.vehiculoId IS NULL
+                                                    GROUP BY ut.placa
+                                            ) d ON d.clientesUploadId = u.clientesUploadId
+                                            JOIN ". $this->pluginPrefix ."clientes c ON c.cedulaNit = u.cedulaNit
+                                            JOIN ". $this->pluginPrefix ."tipoMotor t ON t.tipoMotor = u.tipomotor";break;
         }
         $this->conn->query($query);
     }
@@ -229,9 +253,11 @@ class clientes extends DBManagerModel{
                         if($lines == count($validate["arrayResult"])){
                             $this->addMasterData("clientes");
                             $this->addMasterData("tipousuario");
+                            $this->addMasterData("tipomotor");
                             $this->addMasterData("comercial");
                             $this->addMasterData("clientesInsert");
                             $this->addMasterData("clientesUpdate");
+                            $this->addMasterData("vehiculos");
                         }
                     }
                 }
@@ -265,10 +291,11 @@ class clientes extends DBManagerModel{
         $this->addRecord($this->entity(), $_POST, array("md5" => $md5,"date_entered" => date("Y-m-d H:i:s"), "created_by" => $this->currentUser->ID));
     }
     public function edit(){
-        $this->updateRecord($this->entity(), $_POST, array("integranteId" => $_POST["integranteId"])/*, array("columnValidateEdit" => "assigned_user_id")*/);
+        $md5 = $this->setMd5(); 
+        $this->updateRecord($this->entity(), $_POST, array("clienteId" => $_POST["clienteId"]), null, array("md5" => $md5));
     }
     public function del(){
-        $this->delRecord($this->entity(), array("integranteId" => $_POST["id"])/*, array("columnValidateEdit" => "assigned_user_id")*/);
+        $this->eliminateRecord($this->entity(), array("clienteId" => $_POST["id"]));
     }
 
     public function detail($params = array()){
@@ -291,7 +318,6 @@ class clientes extends DBManagerModel{
     {
         $data = array(
                     "tableName" => $this->pluginPrefix."clientes"
-                    //,"columnValidateEdit" => "assigned_user_id"
                     ,"entityConfig" => $CRUD
                     ,"atributes" => array(
                         "clienteId" => array("type" => "int", "PK" => 0, "required" => false, "readOnly" => true, "autoIncrement" => true, "toolTip" => array("type" => "cell", "cell" => 2) )
