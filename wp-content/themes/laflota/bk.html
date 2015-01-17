@@ -1,0 +1,196 @@
+<?php
+?>
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="css/reset.css">
+        <link rel="stylesheet" type="text/css" href="css/responsive.css">
+        <link href='http://fonts.googleapis.com/css?family=Oswald:400,300' rel='stylesheet' type='text/css'>
+        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/jquery.slides.min.js"></script>
+        <script>
+            $(function(){
+              $("#slideshow").slidesjs({
+                height: 351,
+                navigation: false,
+                play: {
+                    active: false,
+                    effect: "fade",
+                    interval: 3000,
+                    auto: true,
+                    swap: true,
+                    pauseOnHover: false,
+                    restartDelay: 2500
+                  }
+              });
+            });
+            
+            $(function(){
+              $("#capacitacionesSlide").slidesjs({
+                height: 350,
+                navigation: false,
+                play: {
+                    active: false,
+                    effect: "slide",
+                    interval: 5000,
+                    auto: true,
+                    swap: true,
+                    pauseOnHover: false,
+                    restartDelay: 2500
+                  }
+              });
+            });
+        </script>
+        <div id="fb-root"></div>
+        <script>
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v2.0";
+                fjs.parentNode.insertBefore(js, fjs);
+              }(document, 'script', 'facebook-jssdk'));
+        </script>
+        <title>La Flota • Ahorro en cada kilómetro </title>
+    </head>
+    <body>
+        <div id="top">
+            <div id="top0"></div>
+            <div id="top1"></div>
+            <div id="top2"></div>
+        </div>
+        <header id="header">
+            <div class="navbar-header">
+                <button class="navbar-toggle collapsed" aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" type="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <nav id="menu" role="navigation">
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul>
+                        <li><a href="html/programas.html" id="programas_tab">www</a></li>
+                        <li><a href="html/empresa.html" id="servicio_tab">wew</a></li>
+                        <li><a href="html/aliados.html" id="aliados_tab">wew</a></li>
+                        <li><a href="html/respaldo.html" id="respaldo_tab">wew</a></li>
+                        <li><a href="html/contacto.html" id="contacto_tab">wewe</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <a href="https://www.youtube.com/user/EquitelTV" target="_blank" id="youtube"></a>
+        </header>
+        <section id="main">
+            <div id="no-slide">
+                <section id="slideshow">
+                    <div class="slide">
+                        <img src="images/galerias/galeria_home/home3.png" alt="la flota"/>
+                    </div>
+                    <div class="slide">
+                        <img src="images/galerias/galeria_home/home2.png" alt="la flota"/>
+                    </div>
+                    <div class="slide">
+                        <img src="images/galerias/galeria_home/home4.png" alt="la flota"/>
+                    </div>
+                    <div class="slide">
+                        <img src="images/galerias/galeria_home/home5.png" alt="la flota"/>
+                    </div>
+                </section>
+            </div>
+            <section id="columna1">
+		<div id="home_txt">
+                    <h2>¿Por qué <b>La Flota?</b></h2>
+                    <p>Ser parte de nuestra comunidad le permitirá <b>mejorar el costo por cada kilómetro recorrido</b>, a través de precios especiales, servicios adicionales, control y seguimiento a las muestras de aceite, soporte técnico, capacitaciones y servicios de calidad.</p>	
+		</div>
+                <div id="fb_box">
+			<div id="titulo_fb">
+				<h3>Haga parte de nuestra comunidad</h3>
+                                <img src="images/fb_icono.png" alt="facebook">
+			</div>
+                    <div class="fb-like-box" data-href="https://www.facebook.com/comunidadlaflota" data-width="100%" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="false" data-show-border="false"></div>
+		</div>
+            </section>
+            
+            <aside>
+                <section id="login_setion">
+                    <h3>Ingresar</h3>
+                    <img src="images/login_icono.png">
+                    <form id="login_datos">
+                            <span>Usuario</span><br/>
+                            <input type="text" name="usuario" placeholder="NIT" />
+                            <span>Contraseña</span>
+                            <input type="password" name="contrasena"  />
+                            <button id="login_btn" type="submit">
+                                    Ingresar
+                                    <img src="images/login_icono_btn.png">
+                            </button>
+                    </form>
+                </section>
+                <section id="capacitaciones_section">
+                    <h3>Capacitaciones</h3>
+                    <img src="images/capac_icono.png">
+                    <div id="capacitaciones_cont">
+			<div id="capacitacionesSlide">
+                            <div class="slide">
+                                <p><b>29/11/2014</b><br>Análisis de aceite, especificaciones de lubricantes y refrigerante<br><span class="capac_sede">Av. Ciudad de Cali No. 11-22<br>Boogotá, Colombia<br>9:00 a.m.</span></p>
+                            </div>
+                            <div class="slide">
+                                <p><b>13/12/2014</b><br>Familiarización en motores Euro V<br><span class="capac_sede">Av. Ciudad de Cali No. 11-22<br>Boogotá, Colombia<br>9:00am</span></p>
+                            </div>
+			</div>	
+                    </div>
+                </section>
+            </aside>
+        </section>
+        <footer>
+            <section id="ft_widgets">
+                <section class="widget">
+                    <h3>Widget #1</h3>
+                    <ul>
+                        <li><a href="#">link 1</a></li>
+                        <li><a href="#">link 2</a></li>
+                        <li><a href="#">link 3</a></li>
+                        <li><a href="#">link 4</a></li>
+                    </ul>
+                </section>
+                <section class="widget">
+                    <h3>Widget #2</h3>
+                    <ul>
+                        <li><a href="#">link 1</a></li>
+                        <li><a href="#">link 2</a></li>
+                        <li><a href="#">link 3</a></li>
+                        <li><a href="#">link 4</a></li>
+                    </ul>
+                </section>
+            </section>
+            <div class="">
+		<a href="http://www.equitel.com.co/" target="_blank"><img src="images/equitel_logo.png"/></a>
+		<div id="">
+                    <a href="http://www.cumandes.com/" target="_blank"><img src="images/cumandes.png" /></a>
+                    <a href="http://www.gaf.com.co/" target="_blank"><img src="images/gaf.png" /></a>
+                    <a href="http://www.ingenergia.com.co/" target="_blank"><img src="images/inge.png" /></a>
+                    <a href="http://www.lapinternational.com.co/" target="_blank"><img src="images/lap.png" /></a>
+		</div>
+                <div id=""><a href="http://www.c3comunicaciones.com/" target="_blank"><img src="images/logo-c3.png" alt="Marca de agua C3"/></a></div>
+            </div>
+        </footer>
+        <!--<script>
+        
+        $(document).ready(function(){
+                $('#programas_tab').hover(function(){
+                    $('header').css('background-position', '0px -122px');
+                }, 
+                function(){
+                    $('header').css('background-position', '');
+                });
+        });
+        </script>-->
+    </body>
+</html>
+

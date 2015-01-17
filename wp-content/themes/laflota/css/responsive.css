@@ -1,0 +1,356 @@
+/********** Medida para celular ************/
+@media only screen 
+    and (min-width : 0px) 
+    and (max-width : 567px) {
+        #top1{
+            background:url(../images/logo_flota_small.png) no-repeat;
+            width: 254;
+            height: 84px;
+            float: left;
+        }
+        #top2{
+            background:url(../images/top_right_small.png) repeat-x scroll 0px -20px rgba(0, 0, 0, 0);
+            height: 33px;
+            width: 100%;
+            float: none;
+        }
+        #main #no-slide{
+            display: none;
+            visibility: hidden;
+        }
+        .navbar-toggle{background-color: transparent;
+                        height: 10px;
+                        margin-bottom: 8px;
+                        margin-right: 15px;
+                        margin-top: 2px;
+                        padding: 5px 5px 8px 5px;
+                        width: 22px;
+        }
+        .home_txt{
+            background: none #FFFFFF;
+        }
+        .home_txt h2{
+            color: #e98020;
+        }
+        
+        .home_txt h2 a{
+            color: #e98020;
+        }
+        
+        .home_txt p{
+            width: 90%;
+            margin: 5px 10px;
+            font-size: 17px;
+        }
+        
+        .titulos h2{
+            font-size: 19px;
+        }
+        
+        .programas_conten img{
+            width: 0px;
+            height: 0px;
+        }
+        
+        .programas_txt{
+            width: 95%;
+        }
+        
+        .servicios_min{
+            padding-left: 20%;
+        }
+        
+        .ca-nav span.ca-nav-next{
+            right: -20px;
+        }
+        
+        respaldo_info {
+            width: 47% !important;
+        }
+        
+        #nav-header-home{
+            height: 30px;
+            width: 60px;
+        }
+        
+        #fb{
+            background-size: 510px auto;
+            background-repeat: no-repeat;
+            background-position: 30px 0;
+            
+        }
+        
+        #menu a:link {
+            background-position: 17% -3px;
+            background-size: 25px 25px;
+            display: block;
+            height: 30px;
+            padding: 0;
+        }
+    }
+    
+@media only screen 
+    and (min-width : 568px) 
+    and (max-width : 959px) {
+        #top1{
+            background:url(../images/logo_flota_med.png) no-repeat;
+            width: 254;
+            height: 84px;
+            float: left;
+        }
+        #top2{
+            background:url(../images/top_right_small.png) repeat-x scroll 0 0 rgba(0, 0, 0, 0);
+            height: 55px;
+            width: 100%;
+            float: none;
+        }
+        
+        .home_txt p{
+            margin: 12px 0 0 30px;
+        }
+        
+        #login_setion, #capacitaciones_section, #direcciones{
+            margin: 35px 5px 0;
+        }
+        
+        .servicios_min {
+            padding-left: 15%;
+            width: auto !important;
+        }
+        
+        .ca-nav span.ca-nav-next{
+            right: -20px !important;
+        }
+        
+        respaldo_info {
+            width: 47% !important;
+        }
+        
+        #nav-header-home{
+            height: 70px;
+            width: 140px;
+        }
+        
+        #main ul.slidesjs-pagination {
+            margin: -5px auto 0 !important;
+        }
+        
+        #menu a:link {
+            background-position: 33% -3px;
+            background-size: 25px 25px;
+            display: block;
+            height: 30px;
+            padding: 0;
+        }
+    }
+    
+@media only screen 
+    and (min-width : 0px) 
+    and (max-width : 959px) {
+      
+        /*********** Custon responsive menu*************/
+        
+        .navbar-header {
+        float: none;
+        }
+        .navbar-toggle {
+            display: block;
+        }
+        .navbar-collapse {
+            border-top: 1px solid transparent;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .navbar-collapse.collapse {
+            display: none!important;
+        }
+        .navbar-nav {
+            float: none!important;
+            margin: 7.5px -15px;
+        }
+        .navbar-nav>li {
+            float: none;
+        }
+        .navbar-nav>li>a {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        /* since 3.1.0 */
+        .navbar-collapse.collapse.in { 
+            display: block!important;
+        }
+        .collapsing {
+            overflow: hidden!important;
+        }
+        
+        #socialNetworks{
+            padding: 0;
+            margin: 0 auto;
+        }
+        
+        /***************************************/
+        header, #main, footer{
+            width: 95%;
+        }
+        header{
+            background:none;
+            height: auto;
+        }
+        
+        #menu{
+            height: auto;
+            width: 100%;
+        }
+                
+        #menu a:link br {
+            display: none;
+        }
+        
+        header nav {
+            width: 100%;
+        }
+        
+        #columna1 {
+            width: 100%;
+        }
+        
+        .programas_tab, .servicio_tab, .aliados_tab, .respaldo_tab, .contacto_tab{
+            clear: both;
+            width: 98%;
+            height: 20px;
+            background: none;
+            background-color:#e98020; 
+            border-radius: 4px;
+            padding: 5px;
+            margin: 0;
+            border-bottom: #0e4d81 1px solid;
+        }
+        .programas_tab:hover, .programas_tab.current-menu-item,
+        .servicio_tab:hover, .servicio_tab.current-menu-item,
+        .aliados_tab:hover, .aliados_tab.current-menu-item,
+        .respaldo_tab:hover, .respaldo_tab.current-menu-item,
+        .contacto_tab:hover, .contacto_tab.current-menu-item{
+            background: none;
+            background-color:#0e4d81; 
+            border-bottom: #e98020 1px solid;
+        }
+        
+        aside{
+            width: 100%;
+        }
+        
+        .bgArrowDir{
+            width: 100%;
+        }
+        
+        #contact_form{
+            width: 90%;
+        }
+        
+        #contacto_info h3{
+            width: 99%;
+            padding: 3px 0 0 7px;
+        }
+        
+        #contacto_info{
+            background: #FFFFFF url(images/celudesvare_fondo.png)repeat-x;
+            width: 100%;
+            clear: both;
+        }
+        
+        #celudesvare span{
+            margin-top: 20px;
+        }
+        
+        .empresas_equitel{
+            float: none;
+            height: 95px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        #equitelInfo{
+            float: none;
+            margin: 0 auto;
+            width: 300px;
+        }
+        
+        #equitelInfo img{
+            width: 100%;
+        }
+        
+        #empresas {
+            float: none;
+            height: 95px;
+            margin: 0 auto;
+            width: 340px;
+        }
+        
+}
+
+/********** Medida para tablet horizontal ************/
+@media only screen 
+    and (min-width : 1007px) 
+    and (max-width : 1150px) {
+        header{
+            width: 100%;
+        }
+        
+        #top0{
+            display: block;
+            background:url(../images/top_left.png);
+            width: 200px;
+            height: 117px;
+            float: left; 
+        }
+        
+        #top1{
+            background:url(../images/menu_flota.png) no-repeat 0 0;
+            width: 304;
+        }
+        
+        #top2{
+            background:url("../images/top_right.png") repeat-x scroll 0 0;
+            height: 117px;
+            width: 100%;
+            float: none;
+        }
+        
+        .home_txt p{
+            width: 50%;
+            font-size:  17px;
+            margin: 15px 0 0 30px;
+        }
+        
+        #main ul.slidesjs-pagination {
+            margin: -20px auto 0 !important;
+        }
+         
+    }
+@media only screen 
+    and (min-width : 960px) 
+    and (max-width : 1006px) {
+        header{
+            width: 100%;
+        }
+        #top1{
+            background:url(../images/logo_flota_small.png) no-repeat -1 0;
+            width: 304;
+        }
+        #top2{
+            background:url("../images/top_right.png") repeat-x scroll 0 0;
+            height: 133px;
+            width: 100%;
+            float: none;
+        }
+        .home_txt p{
+            width: 50%;
+            font-size:  16px;
+            margin: 15px 0 0 30px;
+        }
+        
+        #main ul.slidesjs-pagination {
+            margin: -5px auto 0 !important;
+        }
+}
+
+/********** Fin Medida para tablet horizontal ********/
