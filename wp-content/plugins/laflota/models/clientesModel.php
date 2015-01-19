@@ -183,7 +183,7 @@ class clientes extends DBManagerModel{
                                 c.`date_entered` = d.date_entered,
                                 c.`created_by` = d.created_by,
                                 c.`md5` = d.md5";break;
-            case "vehiculos": 
+            case "vehiculosInsert": 
                 $query = "INSERT INTO `laflota`.`wp_lf_vehiculos`
                             (`clienteId`,
                             `placa`,
@@ -200,6 +200,27 @@ class clientes extends DBManagerModel{
                                             ) d ON d.clientesUploadId = u.clientesUploadId
                                             JOIN ". $this->pluginPrefix ."clientes c ON c.cedulaNit = u.cedulaNit
                                             JOIN ". $this->pluginPrefix ."tipoMotor t ON t.tipoMotor = u.tipomotor";break;
+        
+            case "vehiculosUpdate":
+                 $query = "UPDATE ". $this->pluginPrefix ."vehiculos veh
+                                JOIN (
+                                    SELECT v.vehiculoId, c.clienteId, u.placa, t.tipoMotorId, MD5(CONCAT(c.clienteId, u.placa, t.tipoMotorId)) COLLATE utf8_general_ci md5, u.date_entered, u.created_by
+                                    FROM ". $this->pluginPrefix ."clientesUploadTmp u
+                                                    JOIN (
+                                                                    SELECT MAX(ut.clientesUploadId) clientesUploadId
+                                                                    FROM ". $this->pluginPrefix ."clientesUploadTmp ut
+                                                                             JOIN ". $this->pluginPrefix ."vehiculos vh ON vh.placa = ut.placa
+                                                                    GROUP BY ut.placa
+                                                    ) d ON d.clientesUploadId = u.clientesUploadId
+                                                    JOIN ". $this->pluginPrefix ."clientes c ON c.cedulaNit = u.cedulaNit
+                                                    JOIN ". $this->pluginPrefix ."tipoMotor t ON t.tipoMotor = u.tipomotor
+                                                    JOIN ". $this->pluginPrefix ."vehiculos v ON v.placa = u.placa AND v.md5 !=  MD5(CONCAT(c.clienteId, u.placa, t.tipoMotorId)) COLLATE utf8_general_ci
+                             ) dat ON dat.vehiculoId = veh.vehiculoId
+                            SET veh.clienteId = dat.clienteId
+                                ,veh.tipoMotorId = dat.tipoMotorId
+                                ,veh.md5 = dat. md5
+                                ,veh.date_entered = dat.date_entered
+                                ,veh.created_by = dat.created_by"; break;
         }
         $this->conn->query($query);
     }
@@ -257,7 +278,8 @@ class clientes extends DBManagerModel{
                             $this->addMasterData("comercial");
                             $this->addMasterData("clientesInsert");
                             $this->addMasterData("clientesUpdate");
-                            $this->addMasterData("vehiculos");
+                            $this->addMasterData("vehiculosInsert");
+                            $this->addMasterData("vehiculosUpdate");
                         }
                     }
                 }
