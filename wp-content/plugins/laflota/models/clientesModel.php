@@ -322,16 +322,18 @@ class clientes extends DBManagerModel{
 
     public function detail($params = array()){
         $entity = $this->entity();
-        $query = "  SELECT `integranteId`, tipoIdentificacion, `identificacion`, activo, `nombre`, `apellido`
-                                    , `genero`, `rhId`, `fechaNacimiento`, DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(), fechaNacimiento)), '%Y')+0 edad
-                                    , telefono, celular
-                                    ,  email, emailPersonal, `direccion`, d.departamento
-                                    ,  c.ciudad ciudadRecidenciaId, `localidad`
-                                    , `barrio` 
-                    FROM ".$entity["tableName"]." i
-                       JOIN ".$this->pluginPrefix."ciudades c ON c.ciudadId = i.ciudadRecidenciaId
-                       JOIN ".$this->pluginPrefix."departamentos d ON d.departamentoId = c.departamentoId
-                    WHERE i.`integranteId` = " . $params["filter"];
+        $query = "  SELECT `clienteId`,
+                            `ciudad` ciudadId,
+                            `tipoUsuario` tipousuarioId,
+                            `cedulaNit`,
+                            `propietario`,
+                            `comercial` comercialId,
+                            `email`
+                    FROM ".$entity["tableName"]." c
+                            JOIN ".$this->pluginPrefix."ciudades i ON i.ciudadId = c.ciudadId
+                            JOIN ".$this->pluginPrefix."tipousuario u ON u.tipousuarioId = c.tipousuarioId
+                            JOIN ".$this->pluginPrefix."comerciales co ON co.comercialId = c.comercialId
+                    WHERE c.`clienteId` = " . $params["filter"];
         $this->queryType = "row";
         return $this->getDataGrid($query);
     }

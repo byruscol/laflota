@@ -28,6 +28,7 @@ $locale = array(
                 ,"ciudadSedeId" => "Ciudad sede"
                 ,"claseVehiculo" => "Clase vehículo"
                 ,"clasificacion_nc_c" => "Clasificación"
+                ,"cliente" => "Cliente"
                 ,"clienteId" => "Id"
                 ,"clientes" => "Clientes"
                 ,"code" => "Código"
