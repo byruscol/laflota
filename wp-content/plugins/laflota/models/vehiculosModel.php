@@ -2,7 +2,7 @@
 /*error_reporting(E_ALL);
 ini_set('display_errors', '1');*/
 require_once('DBManagerModel.php');
-class clientes extends DBManagerModel{
+class vehiculos extends DBManagerModel{
    
     public function getList($params = array()){
         $entity = $this->entity();
@@ -37,7 +37,7 @@ class clientes extends DBManagerModel{
                         `clienteId`,
                         `placa`,
                         `tipoMotorId`
-                    FROM ".$entity["tableName"]." i"
+                    FROM ".$entity["tableName"]." i "
                 . "WHERE  `clienteId` = " . $params["filter"];
         
         if(array_key_exists('where', $params)){
@@ -57,8 +57,8 @@ class clientes extends DBManagerModel{
         return $this->getDataGrid($query, $start, $params["limit"] , $params["sidx"], $params["sord"]);
     }
     
-    public function buildMd5($linea){
-        return md5($linea[1].$linea[2].$linea[3].$linea[4].$linea[5].$linea[7].$linea[8]);
+    public function setMd5(){
+        return md5($_POST["clienteId"].$_POST["placa"].$_POST["tipoMotorId"]);
     }    
     
     public function add(){
@@ -67,10 +67,10 @@ class clientes extends DBManagerModel{
     }
     public function edit(){
         $md5 = $this->setMd5(); 
-        $this->updateRecord($this->entity(), $_POST, array("clienteId" => $_POST["clienteId"]), null, array("md5" => $md5));
+        $this->updateRecord($this->entity(), $_POST, array("vehiculoId" => $_POST["vehiculoId"]), null, array("md5" => $md5));
     }
     public function del(){
-        $this->eliminateRecord($this->entity(), array("clienteId" => $_POST["id"]));
+        $this->eliminateRecord($this->entity(), array("vehiculoId" => $_POST["id"]));
     }
 
     public function detail($params = array()){
@@ -98,7 +98,7 @@ class clientes extends DBManagerModel{
                     ,"entityConfig" => $CRUD
                     ,"atributes" => array(
                         "vehiculoId" => array("type" => "int", "PK" => 0, "required" => false, "readOnly" => true, "autoIncrement" => true, "toolTip" => array("type" => "cell", "cell" => 2) )
-                        ,"clienteId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."clientes", "id" => "clienteId", "text" => "cliente"))
+                        ,"clienteId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."clientes", "id" => "clienteId", "text" => "propietario"))
                         ,"placa" => array("type" => "varchar", "required" => true)
                         ,"tipoMotorId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."tipoMotor", "id" => "tipoMotorId", "text" => "tipoMotor"))
                         ,"parentId" => array("type" => "int","required" => false, "hidden" => true, "isTableCol" => false)

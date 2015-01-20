@@ -58,7 +58,7 @@
             width: 200,
             height: 100
          });
-      var tab = jQuery('#vehiculosTab li:eq(0) a').attr("href");
+      var tab = jQuery('#optionsTab li:eq(0) a').attr("href");
       jQuery(tab).css("opacity", 1);
    });
 </script>
