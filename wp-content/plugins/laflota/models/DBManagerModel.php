@@ -6,9 +6,12 @@ require_once $pluginPath . "/helpers/DBManager.php";
 require_once $pluginPath . "/helpers/mailSender.php";
 abstract class DBManagerModel extends DBManager{
         public $mail;
+        public $resource;
         function __construct() {
             parent::__construct();
+            global $resource;
             $this->mail = new mailSender();
+            $this->resource = $resource;
         }
         
         public function sendAssignedMail($user, $id, $type){
@@ -36,6 +39,45 @@ abstract class DBManagerModel extends DBManager{
                     . " WHERE " . $references["id"] ." = " . $filter;
             return $this->get($query, "var");
         }
+        
+        public function validatorFile($arrayFile, $arrayHeader){
+            $msj = "";
+            $countheader = count($arrayHeader);
+            $arrayResult = array();
+            foreach ($arrayFile as $num_linea => $linea) {
+                $cols = explode(";", $linea);
+                $numCols = count($cols);
+
+                if($numCols != $countheader )
+                {
+                    $msj .= "Error en la linea " . $num_linea.": deben ser ". $countheader ." columnas\n";
+                }
+
+                if($num_linea == 0){
+                    for($i = 0; $i < $countheader; $i++){
+                        if(strtolower($arrayHeader[$i]) != strtolower(trim($cols[$i]))){
+                            $msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$i] ." diferente a ". $cols[$i]."\n";
+                        }
+                    }
+                }
+                else{
+                    foreach ($cols as $num_col => $col){
+                        $cols[$num_col] = trim($col);
+                    }
+                    $arrayResult[] = $cols;
+                }
+        }
+        
+        if(empty($msj)){
+            $result = true;
+        }
+        else {
+            $result = false; 
+            $arrayResult = array();
+        }
+        
+        return array("result" => $result, "msj" => $msj, "arrayResult" => $arrayResult, "cantCols" => $countheader);
+    }
         
         function __destruct() {}
         

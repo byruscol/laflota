@@ -45,46 +45,6 @@ class clientes extends DBManagerModel{
         return $cities;
     }
     
-    public function validatorFile($arrayFile){
-        $msj = "";
-        $arraHeader = array("PLACA","CIUDAD","TIPO","CEDULA / NIT","PROPIETARIO","COMERCIAL SIG","TIPO DE MOTOR","EMAIL","CONFIRMACION DE ENVIO");
-        $countheader = count($arraHeader);
-        $arrayResult = array();
-        foreach ($arrayFile as $num_linea => $linea) {
-            $cols = explode(";", $linea);
-            $numCols = count($cols);
-            
-            if($numCols != $countheader )
-            {
-                $msj .= "Error en la linea " . $num_linea.": deben ser ". $countheader ." columnas";
-            }
-            
-            if($num_linea == 0){
-                for($i = 0; $i < $countheader; $i++){
-                    if(strtolower($arraHeader[$i]) != strtolower(trim($cols[$i]))){
-                        $msj .= "Error en la linea " . $num_linea.": ".$arraHeader[$i] ." diferente a ". $cols[$i];
-                    }
-                }
-            }
-            else{
-                foreach ($cols as $num_col => $col){
-                    $cols[$num_col] = trim($col);
-                }
-                $arrayResult[] = $cols;
-            }
-        }
-        
-        if(empty($msj)){
-            $result = true;
-        }
-        else {
-            $result = false; 
-            $arrayResult = array();
-        }
-        
-        return array("result" => $result, "msj" => $msj, "arrayResult" => $arrayResult, "cantCols" => $countheader);
-    }
-    
     public function existRecord($params) {
         
         $query = "SELECT ". $params["col"] 
@@ -243,7 +203,7 @@ class clientes extends DBManagerModel{
             $file = $target_path.$fileName.".".$ext;
             if(move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
                 $arrayFile = file($file);
-                $validate = $this->validatorFile($arrayFile);
+                $validate = $this->validatorFile($arrayFile, array("PLACA","CIUDAD","TIPO","CEDULA / NIT","PROPIETARIO","COMERCIAL SIG","TIPO DE MOTOR","EMAIL","CONFIRMACION DE ENVIO"));
                 if($validate["result"]){
                     $table = $this->pluginPrefix."clientesUploadTmp";
                     if($this->truncateTable($table)){
@@ -280,6 +240,8 @@ class clientes extends DBManagerModel{
                             $this->addMasterData("clientesUpdate");
                             $this->addMasterData("vehiculosInsert");
                             $this->addMasterData("vehiculosUpdate");
+                            
+                            echo $this->resource->getWord("fileUploaded");
                         }
                     }
                 }
@@ -289,7 +251,7 @@ class clientes extends DBManagerModel{
                 unlink($file);
             } 
             else
-                echo "There was an error uploading the file, please try again!";
+                echo $this->resource->getWord("fileUploadError");
         }
     }
     

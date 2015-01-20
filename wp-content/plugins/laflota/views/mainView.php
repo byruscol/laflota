@@ -26,4 +26,17 @@ function clientes() {
     require_once($viewFile);
 }
 
+function vehiculos() {
+    global $pluginPath;
+    global $viewFile;
+    global $resource;
+    require_once($viewFile);
+}
+
+function extensiones() {
+    global $pluginPath;
+    global $viewFile;
+    global $resource;
+    require_once($viewFile);
+}
 ?>
