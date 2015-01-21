@@ -62,7 +62,7 @@ abstract class DBManagerModel extends DBManager{
                 }
                 else{
                     foreach ($cols as $num_col => $col){
-                        $cols[$num_col] = trim($col);
+                        $cols[$num_col] = addslashes(trim($col));
                     }
                     $arrayResult[] = $cols;
                 }

@@ -91,6 +91,16 @@ class Grid extends DBManager
         switch($this->type){
             case "Grid":
                 switch($colType){
+                    case 'int': $params["model"] = array_merge($params["model"]
+                                            ,array(
+                                                'editrules' => array('integer' => true)
+                                                )
+                                        );break;
+                    case 'number': $params["model"] = array_merge($params["model"]
+                                            ,array(
+                                                'editrules' => array('number' => true)
+                                                )
+                                        );break;
                     case 'date':
                             $params["model"] = array_merge($params["model"]
                                                 ,array(
@@ -111,7 +121,7 @@ class Grid extends DBManager
                                                             )
                                                         );
                                     break;
-                    case 'mail':
+                    case 'email':
                                 $params["model"] = array_merge($params["model"]
                                                      ,array('editrules' => array('email' => true))
                                         );
@@ -283,10 +293,7 @@ class Grid extends DBManager
                     $required = false;
                     $sortable = false;
                 }
-                
-                
-    		$required = ($value['required'])? true: false;
-    		
+                 
     		if($j <= $numCols){
     			$option = array('rowpos' => $k, 'colpos' => $j);
     		}
@@ -296,6 +303,13 @@ class Grid extends DBManager
     			$option = array('rowpos' => $k, 'colpos' => $j);
     		}
     		
+                if($value['required']){
+                    $required = true; 
+                    $option["elmprefix"] = "*";
+                }
+                else
+                    $required = false;
+                
     		$model = array(
     				'label' => $this->loc->getWord($col),
                                 'name'=> $col,

@@ -10,7 +10,10 @@ class vehiculos extends DBManagerModel{
         $query = "SELECT `vehiculoId`,
                         `clienteId` cliente,
                         `placa`,
-                        `tipoMotorId`
+                        `tipoMotorId`,
+                        `marcaMotorId`,
+                        `marcaVehiculoId`,
+                        `des_modelo`
                     FROM ".$entity["tableName"]." i";
         
         if(array_key_exists('where', $params)){
@@ -35,7 +38,10 @@ class vehiculos extends DBManagerModel{
         $query = "SELECT `vehiculoId`,
                         `clienteId` cliente,
                         `placa`,
-                        `tipoMotorId`
+                        `tipoMotorId`,
+                        `marcaMotorId`,
+                        `marcaVehiculoId`,
+                        `des_modelo`
                     FROM ".$entity["tableName"]." i "
                 . "WHERE  `clienteId` = " . $params["filter"];
         
@@ -190,6 +196,9 @@ class vehiculos extends DBManagerModel{
                         ,"cliente" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."clientes", "id" => "clienteId", "text" => "propietario"))
                         ,"placa" => array("type" => "varchar", "required" => true)
                         ,"tipoMotorId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."tipoMotor", "id" => "tipoMotorId", "text" => "tipoMotor"))
+                        ,"marcaMotorId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."marcaMotores", "id" => "marcaMotorId", "text" => "marcaMotor"))
+                        ,"marcaVehiculoId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."marcaVehiculos", "id" => "marcaVehiculoId", "text" => "marcaVehiculo"))
+                        ,"des_modelo" => array("type" => "varchar", "required" => true)
                         ,"parentId" => array("type" => "int","required" => false, "hidden" => true, "isTableCol" => false)
                         ,"parentRelationShip" => array("type" => "varchar","required" => false, "hidden" => true, "isTableCol" => false)
                     )

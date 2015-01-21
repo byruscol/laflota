@@ -57,7 +57,7 @@ class clientes extends DBManagerModel{
     }
     
     public function buildMd5($linea){
-        return md5($linea[1].$linea[2].$linea[3].$linea[4].$linea[5].$linea[7].$linea[8]);
+        return md5($linea[1].$linea[2].$linea[3].$linea[4].$linea[5].$linea[10].$linea[11]);
     }    
     
     public function addMasterData($param){
@@ -76,7 +76,21 @@ class clientes extends DBManagerModel{
                                 FROM ". $this->pluginPrefix ."clientesUploadTmp u
                                           LEFT JOIN ". $this->pluginPrefix ."tipoMotor t ON u.tipomotor = t.tipoMotor
                                 WHERE t.tipoMotorId IS NULL
-                                GROUP BY u.tipomotor"; break; 
+                                GROUP BY u.tipomotor"; break;
+            case "marcamotor":      
+                    $query = "INSERT INTO `". $this->pluginPrefix ."marcaMotores`(`marcaMotor`)
+                                SELECT u.marcamotor 
+                                FROM ". $this->pluginPrefix ."clientesUploadTmp u
+                                          LEFT JOIN ". $this->pluginPrefix ."marcaMotores t ON u.marcamotor = t.marcaMotor
+                                WHERE t.marcaMotorId IS NULL
+                                GROUP BY u.marcamotor"; break;
+            case "marcavehiculo":
+                    $query = "INSERT INTO `". $this->pluginPrefix ."marcaVehiculos`(`marcaVehiculo`)
+                                SELECT u.marcavehiculo 
+                                FROM ". $this->pluginPrefix ."clientesUploadTmp u
+                                          LEFT JOIN ". $this->pluginPrefix ."marcaVehiculos t ON u.marcavehiculo = t.marcaVehiculo
+                                WHERE t.marcaVehiculoId IS NULL
+                                GROUP BY u.marcavehiculo"; break;
             case "tipousuario":
                     $query = "INSERT INTO `". $this->pluginPrefix ."tipousuario`(`tipoUsuario`)
                                 SELECT u.tipousuario 
@@ -148,8 +162,13 @@ class clientes extends DBManagerModel{
                             (`clienteId`,
                             `placa`,
                             `tipoMotorId`,
-                            `md5`)
-                            SELECT clienteId, u.placa, tipoMotorId, MD5(CONCAT(clienteId, u.placa, tipoMotorId))
+                            `marcaMotorId`,
+                            `marcaVehiculoId`,
+                            `des_modelo`,
+                            `md5`,
+                            `date_entered`,
+                            `created_by`)
+                            SELECT clienteId, u.placa, tipoMotorId, marcaMotorId, marcaVehiculoId, des_modelo, MD5(CONCAT(clienteId, u.placa, tipoMotorId, marcaMotorId, marcaVehiculoId, des_modelo)),u.date_entered,u.created_by
                             FROM ". $this->pluginPrefix ."clientesUploadTmp u
                                             JOIN (
                                                     SELECT MAX(ut.clientesUploadId) clientesUploadId
@@ -159,12 +178,14 @@ class clientes extends DBManagerModel{
                                                     GROUP BY ut.placa
                                             ) d ON d.clientesUploadId = u.clientesUploadId
                                             JOIN ". $this->pluginPrefix ."clientes c ON c.cedulaNit = u.cedulaNit
-                                            JOIN ". $this->pluginPrefix ."tipoMotor t ON t.tipoMotor = u.tipomotor";break;
+                                            JOIN ". $this->pluginPrefix ."tipoMotor t ON t.tipoMotor = u.tipomotor"
+                    . "                     JOIN ". $this->pluginPrefix ."marcaMotores mm ON mm.marcaMotor = u.marcamotor"
+                    . "                     JOIN ". $this->pluginPrefix ."marcaVehiculos mv ON mv.marcaVehiculo = u.marcavehiculo";break;
         
             case "vehiculosUpdate":
                  $query = "UPDATE ". $this->pluginPrefix ."vehiculos veh
                                 JOIN (
-                                    SELECT v.vehiculoId, c.clienteId, u.placa, t.tipoMotorId, MD5(CONCAT(c.clienteId, u.placa, t.tipoMotorId)) COLLATE utf8_general_ci md5, u.date_entered, u.created_by
+                                    SELECT v.vehiculoId, c.clienteId, u.placa, t.tipoMotorId, marcaMotorId, marcaVehiculoId, des_modelo, MD5(CONCAT(clienteId, u.placa, tipoMotorId, marcaMotorId, marcaVehiculoId, des_modelo)) COLLATE utf8_general_ci md5, u.date_entered, u.created_by
                                     FROM ". $this->pluginPrefix ."clientesUploadTmp u
                                                     JOIN (
                                                                     SELECT MAX(ut.clientesUploadId) clientesUploadId
@@ -174,10 +195,15 @@ class clientes extends DBManagerModel{
                                                     ) d ON d.clientesUploadId = u.clientesUploadId
                                                     JOIN ". $this->pluginPrefix ."clientes c ON c.cedulaNit = u.cedulaNit
                                                     JOIN ". $this->pluginPrefix ."tipoMotor t ON t.tipoMotor = u.tipomotor
-                                                    JOIN ". $this->pluginPrefix ."vehiculos v ON v.placa = u.placa AND v.md5 !=  MD5(CONCAT(c.clienteId, u.placa, t.tipoMotorId)) COLLATE utf8_general_ci
+                                                    JOIN ". $this->pluginPrefix ."marcaMotores mm ON mm.marcaMotor = u.marcamotor"
+                    . "                             JOIN ". $this->pluginPrefix ."marcaVehiculos mv ON mv.marcaVehiculo = u.marcavehiculo
+                                                    JOIN ". $this->pluginPrefix ."vehiculos v ON v.placa = u.placa AND v.md5 !=  MD5(CONCAT(clienteId, u.placa, tipoMotorId, marcaMotorId, marcaVehiculoId, des_modelo)) COLLATE utf8_general_ci
                              ) dat ON dat.vehiculoId = veh.vehiculoId
                             SET veh.clienteId = dat.clienteId
                                 ,veh.tipoMotorId = dat.tipoMotorId
+                                ,veh.marcaMotorId = dat.marcaMotorId
+                                ,veh.marcaVehiculoId = dat.marcaVehiculoId
+                                ,veh.des_modelo = dat.des_modelo
                                 ,veh.md5 = dat. md5
                                 ,veh.date_entered = dat.date_entered
                                 ,veh.created_by = dat.created_by"; break;
@@ -196,14 +222,15 @@ class clientes extends DBManagerModel{
         $fileName = str_replace(array("'",".",",","*","@","?","!"), "_",$fileName);
         
         $tableTmpCols = array("placa", "ciudad", "tipousuario", "cedulaNit"
-                                , "propietario", "comercial", "tipomotor"
-                                , "email", "confirmacion", "md5", "date_entered", "created_by");
+                                , "propietario", "comercial", "tipomotor", "marcamotor"
+                                , "marcavehiculo", "des_modelo", "email", "confirmacion", "md5"
+                                , "date_entered", "created_by");
         	
         if($_FILES["file"]["type"]=="text/csv"){
             $file = $target_path.$fileName.".".$ext;
             if(move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
                 $arrayFile = file($file);
-                $validate = $this->validatorFile($arrayFile, array("PLACA","CIUDAD","TIPO","CEDULA / NIT","PROPIETARIO","COMERCIAL SIG","TIPO DE MOTOR","EMAIL","CONFIRMACION DE ENVIO"));
+                $validate = $this->validatorFile($arrayFile, array("PLACA","CIUDAD","TIPO","CEDULA / NIT","PROPIETARIO","COMERCIAL SIG","TIPO DE MOTOR","MARCA MOTOR","MARCA VEHICULO","MODELO","EMAIL","CONFIRMACION DE ENVIO"));
                 if($validate["result"]){
                     $table = $this->pluginPrefix."clientesUploadTmp";
                     if($this->truncateTable($table)){
@@ -225,6 +252,9 @@ class clientes extends DBManagerModel{
                                     `propietario`,
                                     `comercial`,
                                     `tipomotor`,
+                                    `marcamotor`,
+                                    `marcavehiculo`,
+                                    `des_modelo`,
                                     `email`,
                                     `confirmacion`,
                                     `md5`,
@@ -235,6 +265,8 @@ class clientes extends DBManagerModel{
                             $this->addMasterData("clientes");
                             $this->addMasterData("tipousuario");
                             $this->addMasterData("tipomotor");
+                            $this->addMasterData("marcamotor");
+                            $this->addMasterData("marcavehiculo");
                             $this->addMasterData("comercial");
                             $this->addMasterData("clientesInsert");
                             $this->addMasterData("clientesUpdate");

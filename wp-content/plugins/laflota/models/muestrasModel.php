@@ -7,28 +7,78 @@ class muestras extends DBManagerModel{
     public function getList($params = array()){
         $entity = $this->entity();
         $start = $params["limit"] * $params["page"] - $params["limit"];
-        $query = "SELECT i.`integranteId`, tipoIdentificacion, `identificacion`, activo, `nombre`, `apellido`
-                        , `genero`, `rhId`, `fechaNacimiento`, DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(), fechaNacimiento)), '%Y')+0 edad
-                        , telefono, celular,  email, emailPersonal, `direccion`, departamentoId departamento
-                        , `ciudadRecidenciaId`, `localidad`
-                        , `barrio`, if(h.Hijos IS NULL ,0, h.Hijos) Hijos, '' foto
-                  FROM ".$entity["tableName"]." i
-                       JOIN ".$this->pluginPrefix."ciudades c ON c.ciudadId = i.ciudadRecidenciaId
-                       LEFT JOIN (
-                            SELECT integranteId, COUNT(1) Hijos
-                            FROM apps.wp_rh_familiares
-                            WHERE tipo = 'Hijo'
-                            GROUP BY integranteId
-                        )h ON h.integranteId = i.integranteId
-                  WHERE `deleted` = 0";
+            $query = "SELECT `muestraId`,
+                            `vehiculoId`,
+                            `nromuestra`,
+                            `estadoMuestraId`,
+                            `tipoMuestraId`,
+                            `componentenumero`,
+                            `ftoma`,
+                            `kanterior`,
+                            `klactual`,
+                            `marcaMotorId`,
+                            `tipoMotorId`,
+                            `marcaVehiculoId`,
+                            `des_modelo`,
+                            `vis100`,
+                            `maxvis`,
+                            `vis40`,
+                            `fe`,
+                            `maxfe`,
+                            `cr`,
+                            `maxcr`,
+                            `pb`,
+                            `maxpb`,
+                            `al`,
+                            `maxal`,
+                            `cu`,
+                            `maxcu`,
+                            `si`,
+                            `maxsi`,
+                            `hollin`,
+                            `maxhollin`,
+                            `tbn`,
+                            `maxtbn`,
+                            `agua`,
+                            `maxagua`,
+                            `combustible`,
+                            `maxcombustible`,
+                            `escritica`,
+                            `observaciones`
+                    FROM ".$entity["tableName"]." i";
         
         if(array_key_exists('where', $params)){
             if (is_array( $params["where"]->rules )){
                 $countRules = count($params["where"]->rules);
                 for($i = 0; $i < $countRules; $i++){
                     switch($params["where"]->rules[$i]->field ){
-                        case "created_by": $params["where"]->rules[$i]->field = "display_name"; break;
-                        case "edad": $params["where"]->rules[$i]->field = "DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(), fechaNacimiento)), '%Y')+0"; break;
+                        case "vehiculo": $params["where"]->rules[$i]->field = "vehiculoId"; break;
+                    }
+                }
+            }
+            
+           $query .= " WHERE (". $this->buildWhere($params["where"]) .")";
+        }
+        
+        return $this->getDataGrid($query, $start, $params["limit"] , $params["sidx"], $params["sord"]);
+    }
+
+    public function getVehiculosCliente($params = array()){
+        $entity = $this->entity();
+        $start = $params["limit"] * $params["page"] - $params["limit"];
+        $query = "SELECT `vehiculoId`,
+                        `clienteId` cliente,
+                        `placa`,
+                        `tipoMotorId`
+                    FROM ".$entity["tableName"]." i "
+                . "WHERE  `clienteId` = " . $params["filter"];
+        
+        if(array_key_exists('where', $params)){
+            if (is_array( $params["where"]->rules )){
+                $countRules = count($params["where"]->rules);
+                for($i = 0; $i < $countRules; $i++){
+                    switch($params["where"]->rules[$i]->field ){
+                        case "cliente": $params["where"]->rules[$i]->field = "clienteId"; break;
                     }
                 }
             }
@@ -38,133 +88,175 @@ class muestras extends DBManagerModel{
         
         return $this->getDataGrid($query, $start, $params["limit"] , $params["sidx"], $params["sord"]);
     }
-
-    public function getCities($params){
-        $query = "SELECT ciudadId, ciudad 
-                  FROM ".$this->pluginPrefix."ciudades c
-                  WHERE `departamentoId` = ". $params["filter"];
-        
-        $cities = $this->getDataGrid($query, NULL, NULL , "ciudad", "ASC");
-        $responce = array("metaData" => array("key" => "ciudadId", "value" => "ciudad"), "data" => $cities["data"]);
-        return $cities;
-    }
     
-    public function getIntegrantesFromName($params){
-        $entity = $this->entity();
-        $query = "SELECT `integranteId`, CONCAT(`nombre`, ' ', `apellido`) nombre 
-                  FROM ".$entity["tableName"]." i
-                  WHERE `deleted` = 0 AND (nombre LIKE '%". $params["filter"] ."%' OR apellido LIKE '%". $params["filter"] ."%')";
-         
-        $responceGrid = $this->getDataGrid($query, NULL, NULL , "2", "ASC");
+    private function validateVehicles(){
+        $msj = "";
+        $query = "SELECT t.placa FROM laflota.wp_lf_extensionesUploadTmp t
+                    WHERE NOT EXISTS(
+                                            SELECT 1 FROM laflota.wp_lf_vehiculos v
+                                            WHERE   v.placa = t.placa
+                                    );";
+        $result = $this->conn->get_col($query);
         
-        $responce = array(
-                            "data" =>  array("query" => "Unit"
-                                            , "suggestions" => array()
-                                        )
-                            ,"customResponce" => true
-                        );
         
-        for($i = 0; $i < $responceGrid["totalRows"]; $i++){
-            $responce["data"]["suggestions"][] = array("value" => $responceGrid["data"][$i]->nombre
-                                                    ,"data" => $responceGrid["data"][$i]->integranteId
-                                                  );
+        foreach ($result as $num_linea => $linea){
+            $msj = $linea.": ".$this->resource->getWord("vehiculoNoExiste")."\n";
         }
-        
-        return $responce;
+        return $msj;
     }
     
-    public function getIntegrantesFamiliares($params = array()){
-        require "familiaresModel.php";
-        $familiares = new familiares();
-        return $familiares->getIntegrantesFamiliares($params);
+    public function addMasterData($param){
+        
+        switch($param){
+            case "extensiones":
+                    $query = "INSERT INTO `laflota`.`". $this->pluginPrefix ."extensiones`
+                                    (`vehiculoId`,
+                                    `kilometraje`,
+                                    `date_entered`,
+                                    `created_by`)
+                                SELECT vehiculoId, t.kilometraje, t.date_entered, t.created_by
+                                FROM ". $this->pluginPrefix ."extensionesUploadTmp t
+                                        JOIN ". $this->pluginPrefix ."vehiculos v ON v.placa = t.placa"; break;
+        }
+        $this->conn->query($query);
     }
+    
+    
+    public function load(){
+        $entity = $this->entity();
+        $target_path = $this->pluginPath."/uploadedFiles/";
+        $fileName = $_FILES['file']['name'];
+        $nameParts = explode(".", $fileName);
+        $ext = end($nameParts);
+        $nameArray = array_pop($nameParts);
+        $fileName = implode("_",$nameParts);
+        $fileName = str_replace(array("'",".",",","*","@","?","!"), "_",$fileName);
+        
+        $tableTmpCols = array("placa", "ciudad", "tipousuario", "cedulaNit"
+                                , "propietario", "comercial", "tipomotor"
+                                , "email", "confirmacion", "md5", "date_entered", "created_by");
+        	
+        if($_FILES["file"]["type"]=="text/csv"){
+            $file = $target_path.$fileName.".".$ext;
+            if(move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
+                $arrayFile = file($file);
+                $validate = $this->validatorFile($arrayFile, array("PLACA","KILOMETRAJE"));
+                if($validate["result"]){
+                    $table = $this->pluginPrefix."extensionesUploadTmp";
+                    if($this->truncateTable($table)){
+                        $lines = 0;
+                        $record = array();
+                        
+                        $date_entered = date("Y-m-d H:i:s");
+                        $created_by = $this->currentUser->ID;
+                        foreach ($validate["arrayResult"] as $num_linea => $linea){
+                            $record[] = "'".trim(implode("','",$linea))."','".$date_entered."','".$created_by."'";
+                        }
+                        $dataInsert = '('.implode("),(",$record).')';
+                        $query = "INSERT INTO ".$table."
+                                    (`placa`,
+                                    `kilometraje`,
+                                    `date_entered`,
+                                    `created_by`) VALUES " .$dataInsert;
+                        $lines = $this->conn->query($query);
+                        if($lines == count($validate["arrayResult"])){
+                            $msj = $this->validateVehicles();
+                            if(empty($msj)){
+                                $this->addMasterData("extensiones");
+                                echo $this->resource->getWord("fileUploaded");
+                            }
+                            else
+                                echo $msj;
+
+                        }
+                    }
+                }
+                else{
+                    echo $validate["msj"];
+                }
+                unlink($file);
+            } 
+            else
+                echo $this->resource->getWord("fileUploadError");
+        }
+    }
+    public function setMd5(){
+        return md5($_POST["clienteId"].$_POST["placa"].$_POST["tipoMotorId"]);
+    }    
     
     public function add(){
-        $_POST["fechaNacimiento"] = $this->formatDate($_POST["fechaNacimiento"]);
-        $this->addRecord($this->entity(), $_POST, array("date_entered" => date("Y-m-d H:i:s"), "created_by" => $this->currentUser->ID));
-        echo json_encode(array("parentId" => $this->LastId));
+        $md5 = $this->setMd5(); 
+        $this->addRecord($this->entity(), $_POST, array("md5" => $md5,"date_entered" => date("Y-m-d H:i:s"), "created_by" => $this->currentUser->ID));
     }
     public function edit(){
-        $_POST["fechaNacimiento"] = $this->formatDate($_POST["fechaNacimiento"]);
-        $this->updateRecord($this->entity(), $_POST, array("integranteId" => $_POST["integranteId"])/*, array("columnValidateEdit" => "assigned_user_id")*/);
-        echo json_encode(array("parentId" => $_POST["integranteId"]));
+        $md5 = $this->setMd5(); 
+        $this->updateRecord($this->entity(), $_POST, array("muestraId" => $_POST["muestraId"]), null, array("md5" => $md5));
     }
     public function del(){
-        $this->delRecord($this->entity(), array("integranteId" => $_POST["id"])/*, array("columnValidateEdit" => "assigned_user_id")*/);
+        $this->eliminateRecord($this->entity(), array("muestraId" => $_POST["id"]));
     }
 
     public function detail($params = array()){
         $entity = $this->entity();
-        $query = "  SELECT `integranteId`, tipoIdentificacion, `identificacion`, activo, `nombre`, `apellido`
-                                    , `genero`, `rhId`, `fechaNacimiento`, DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(), fechaNacimiento)), '%Y')+0 edad
-                                    , telefono, celular
-                                    ,  email, emailPersonal, `direccion`, d.departamento
-                                    ,  c.ciudad ciudadRecidenciaId, `localidad`
-                                    , `barrio` 
-                    FROM ".$entity["tableName"]." i
-                       JOIN ".$this->pluginPrefix."ciudades c ON c.ciudadId = i.ciudadRecidenciaId
-                       JOIN ".$this->pluginPrefix."departamentos d ON d.departamentoId = c.departamentoId
-                    WHERE i.`integranteId` = " . $params["filter"];
+        $query = "  SELECT `clienteId`,
+                            `ciudad` ciudadId,
+                            `tipoUsuario` tipousuarioId,
+                            `cedulaNit`,
+                            `propietario`,
+                            `comercial` comercialId,
+                            `email`
+                    FROM ".$entity["tableName"]." c
+                            JOIN ".$this->pluginPrefix."ciudades i ON i.ciudadId = c.ciudadId
+                            JOIN ".$this->pluginPrefix."tipousuario u ON u.tipousuarioId = c.tipousuarioId
+                            JOIN ".$this->pluginPrefix."comerciales co ON co.comercialId = c.comercialId
+                    WHERE c.`clienteId` = " . $params["filter"];
         $this->queryType = "row";
         return $this->getDataGrid($query);
     }
     
     public function entity($CRUD = array())
     {
-            $data = array(
-                            "tableName" => $this->pluginPrefix."integrantes"
-                            //,"columnValidateEdit" => "assigned_user_id"
-                            ,"entityConfig" => $CRUD
-                            ,"atributes" => array(
-                                "integranteId" => array("type" => "int", "PK" => 0, "required" => false, "readOnly" => true, "autoIncrement" => true, "toolTip" => array("type" => "cell", "cell" => 2) )
-                                ,"tipoIdentificacion" => array("type" => "enum", "required" => true)
-                                ,"identificacion" => array("type" => "varchar", "required" => true)
-                                ,"activo" => array("type" => "enum", "required" => true)
-                                ,"nombre" => array("type" => "varchar", "required" => true)
-                                ,"apellido" => array("type" => "varchar", "required" => true)
-                                ,"genero" => array("type" => "enum", "hidden" => true, "edithidden" => true, "required" => true)
-                                ,"rhId" => array("type" => "tinyint", "hidden" => true, "edithidden" => true, "required" => true, "references" => array("table" => $this->pluginPrefix."rh", "id" => "rhId", "text" => "rh"))
-                                ,"fechaNacimiento" => array("type" => "date", "hidden" => true, "edithidden" => true, "hidden" => true, "edithidden" => true, "required" => true)
-                                ,"edad" => array("type" => "tinyint", "required" => false, "isTableCol" => false, "readOnly" => true)
-                                ,"telefono" => array("type" => "varchar", "required" => true)
-                                ,"celular" => array("type" => "varchar", "required" => true)
-                                ,"email" => array("type" => "email", "required" => true)
-                                ,"emailPersonal" => array("type" => "email", "hidden" => true, "edithidden" => true)
-                                ,"direccion" => array("type" => "varchar", "hidden" => true, "edithidden" => true, "required" => true)
-                                ,"departamento" => array("type" => "tinyint", "isTableCol" => false, "hidden" => true, "edithidden" => true, "required" => true, "references" => array("table" => $this->pluginPrefix."departamentos", "id" => "departamentoId", "text" => "departamento"),
-                                                         "dataEvents" => array(
-                                                                                array("type" => "change",
-                                                                                      "fn" => "@function(e) {"
-                                                                                                    . "var thisval = $(e.target).val();"
-                                                                                                    . "jQuery.post("
-                                                                                                        . "  'admin-ajax.php',"
-                                                                                                        . " { action: 'action', id: 'integrantes', method: 'getCities', filter: thisval }"
-                                                                                                    . ")"
-                                                                                                    . " .done(function( msg ) {"
-                                                                                                                . "var data = jQuery.parseJSON(msg);"
-                                                                                                                . "var dropdown = jQuery('#ciudadRecidenciaId');"
-                                                                                                                . "dropdown.empty();"
-                                                                                                                . "var newOptions = {};"
-                                                                                                                . "for(xx in data.rows){"
-                                                                                                                   . "newOptions[data.rows[xx].id] = data.rows[xx].cell[1];"
-                                                                                                                . "}"
-                                                                                                                . "jQuery.each(newOptions, function(key, value) {"
-                                                                                                                . " dropdown.append(jQuery('<option></option>')"
-                                                                                                                . "     .attr('value', key).text(value));"
-                                                                                                                . " });"
-                                                                                                        . "});"
-                                                                                            . "}@"
-                                                                                    )
-                                                                                )
-                                                        )
-                                ,"ciudadRecidenciaId" => array("type" => "tinyint", "required" => true, "references" => array("table" => $this->pluginPrefix."ciudades", "id" => "ciudadId", "text" => "ciudad", "cascadeDep" => array("id" => "departamentoId", "value" => "departamentoId")))
-                                ,"localidad" => array("type" => "varchar", "hidden" => true, "edithidden" => true, "required" => true)
-                                ,"barrio" => array("type" => "varchar", "hidden" => true, "edithidden" => true, "required" => true)
-                                ,"Hijos" => array("type" => "int", "required" => false,"hidden" => false, "edithidden" => true, "isTableCol" => false)
-                                ,"foto" => array("type" => "file", "validateAttr" => array("size" => 50, "units" => "MB", "factor" => 1024), "required" => false,"hidden" => true, "edithidden" => true, "isTableCol" => false)
-                            )
-                    );
-            return $data;
+        $data = array(
+                    "tableName" => $this->pluginPrefix."muestras"
+                    ,"entityConfig" => $CRUD
+                    ,"atributes" => array(
+                        "muestraId" => array("type" => "int", "PK" => 0, "required" => false, "readOnly" => true, "autoIncrement" => true, "toolTip" => array("type" => "cell", "cell" => 2) )
+                        ,"vehiculo" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."vehiculos", "id" => "vehiculoId", "text" => "placa"))
+                        ,"nromuestra" => array("type" => "varchar", "required" => true)
+                        ,"estadoMuestraId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."estadoMuestras", "id" => "estadoMuestraId", "text" => "estadoMuestra"))
+                        ,"tipoMuestraId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."tipoMuestras", "id" => "tipoMuestraId", "text" => "tipoMuestra"))
+                        ,"componentenumero" => array("type" => "int", "required" => true)
+                        ,"ftoma" => array("type" => "date", "required" => true)
+                        ,"kanterior" => array("type" => "int", "required" => true)
+                        ,"klactual" => array("type" => "int", "required" => true)
+                        ,"vis100" => array("type" => "number", "required" => true)
+                        ,"maxvis" => array("type" => "number", "required" => true)
+                        ,"vis40" => array("type" => "number", "required" => true)
+                        ,"fe" => array("type" => "number", "required" => true)
+                        ,"maxfe" => array("type" => "number", "required" => true)
+                        ,"cr" => array("type" => "number", "required" => true)
+                        ,"maxcr" => array("type" => "number", "required" => true)
+                        ,"pb" => array("type" => "number", "required" => true)
+                        ,"maxpb" => array("type" => "number", "required" => true)
+                        ,"al" => array("type" => "number", "required" => true)
+                        ,"maxal" => array("type" => "number", "required" => true)
+                        ,"cu" => array("type" => "number", "required" => true)
+                        ,"maxcu" => array("type" => "number", "required" => true)
+                        ,"si" => array("type" => "number", "required" => true)
+                        ,"maxsi" => array("type" => "number", "required" => true)
+                        ,"hollin" => array("type" => "number", "required" => true)
+                        ,"maxhollin" => array("type" => "number", "required" => false)
+                        ,"tbn" => array("type" => "number", "required" => true)
+                        ,"maxtbn" => array("type" => "number", "required" => false)
+                        ,"agua" => array("type" => "number", "required" => false)
+                        ,"maxagua" => array("type" => "number", "required" => false)
+                        ,"combustible" => array("type" => "number", "required" => true)
+                        ,"maxcombustible" => array("type" => "number", "required" => false)
+                        ,"escritica" => array("type" => "enum", "required" => false)
+                        ,"observaciones" => array("type" => "text", "required" => false)
+                    )
+                );  
+        return $data;
     }
 }
 ?>
