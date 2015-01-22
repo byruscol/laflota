@@ -8,7 +8,7 @@ class vehiculos extends DBManagerModel{
         $entity = $this->entity();
         $start = $params["limit"] * $params["page"] - $params["limit"];
         $query = "SELECT `vehiculoId`,
-                        `clienteId` cliente,
+                        `clienteId`,
                         `placa`,
                         `tipoMotorId`,
                         `marcaMotorId`,
@@ -63,11 +63,12 @@ class vehiculos extends DBManagerModel{
     
     private function validateVehicles(){
         $msj = "";
-        $query = "SELECT t.placa FROM laflota.wp_lf_extensionesUploadTmp t
+        $query = "SELECT t.placa FROM ". $this->pluginPrefix ."extensionesUploadTmp t
                     WHERE NOT EXISTS(
-                                            SELECT 1 FROM laflota.wp_lf_vehiculos v
+                                            SELECT 1 FROM ". $this->pluginPrefix ."vehiculos v
                                             WHERE   v.placa = t.placa
                                     );";
+
         $result = $this->conn->get_col($query);
         
         
@@ -103,10 +104,6 @@ class vehiculos extends DBManagerModel{
         $nameArray = array_pop($nameParts);
         $fileName = implode("_",$nameParts);
         $fileName = str_replace(array("'",".",",","*","@","?","!"), "_",$fileName);
-        
-        $tableTmpCols = array("placa", "ciudad", "tipousuario", "cedulaNit"
-                                , "propietario", "comercial", "tipomotor"
-                                , "email", "confirmacion", "md5", "date_entered", "created_by");
         	
         if($_FILES["file"]["type"]=="text/csv"){
             $file = $target_path.$fileName.".".$ext;
@@ -153,7 +150,7 @@ class vehiculos extends DBManagerModel{
         }
     }
     public function setMd5(){
-        return md5($_POST["clienteId"].$_POST["placa"].$_POST["tipoMotorId"]);
+        return md5($_POST["clienteId"].$_POST["placa"].$_POST["tipoMotorId"].$_POST["marcaMotorId"].$_POST["marcaVehiculoId"].$_POST["des_modelo"]);
     }    
     
     public function add(){
@@ -168,23 +165,7 @@ class vehiculos extends DBManagerModel{
         $this->eliminateRecord($this->entity(), array("vehiculoId" => $_POST["id"]));
     }
 
-    public function detail($params = array()){
-        $entity = $this->entity();
-        $query = "  SELECT `clienteId`,
-                            `ciudad` ciudadId,
-                            `tipoUsuario` tipousuarioId,
-                            `cedulaNit`,
-                            `propietario`,
-                            `comercial` comercialId,
-                            `email`
-                    FROM ".$entity["tableName"]." c
-                            JOIN ".$this->pluginPrefix."ciudades i ON i.ciudadId = c.ciudadId
-                            JOIN ".$this->pluginPrefix."tipousuario u ON u.tipousuarioId = c.tipousuarioId
-                            JOIN ".$this->pluginPrefix."comerciales co ON co.comercialId = c.comercialId
-                    WHERE c.`clienteId` = " . $params["filter"];
-        $this->queryType = "row";
-        return $this->getDataGrid($query);
-    }
+    public function detail($params = array()){}
     
     public function entity($CRUD = array())
     {
@@ -192,13 +173,13 @@ class vehiculos extends DBManagerModel{
                     "tableName" => $this->pluginPrefix."vehiculos"
                     ,"entityConfig" => $CRUD
                     ,"atributes" => array(
-                        "vehiculoId" => array("type" => "int", "PK" => 0, "required" => false, "readOnly" => true, "autoIncrement" => true, "toolTip" => array("type" => "cell", "cell" => 2) )
-                        ,"cliente" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."clientes", "id" => "clienteId", "text" => "propietario"))
-                        ,"placa" => array("type" => "varchar", "required" => true)
-                        ,"tipoMotorId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."tipoMotor", "id" => "tipoMotorId", "text" => "tipoMotor"))
-                        ,"marcaMotorId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."marcaMotores", "id" => "marcaMotorId", "text" => "marcaMotor"))
-                        ,"marcaVehiculoId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."marcaVehiculos", "id" => "marcaVehiculoId", "text" => "marcaVehiculo"))
-                        ,"des_modelo" => array("type" => "varchar", "required" => true)
+                        "vehiculoId" => array("label" => "id" ,"type" => "int", "PK" => 0, "required" => false, "readOnly" => true, "autoIncrement" => true, "toolTip" => array("type" => "cell", "cell" => 2) )
+                        ,"clienteId" => array("label" => "cliente" ,"type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."clientes", "id" => "clienteId", "text" => "propietario"))
+                        ,"placa" => array("label" => "placa" ,"type" => "varchar", "required" => true)
+                        ,"tipoMotorId" => array("label" => "tipoMotorId" ,"type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."tipoMotor", "id" => "tipoMotorId", "text" => "tipoMotor"))
+                        ,"marcaMotorId" => array("label" => "marcaMotorId" ,"type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."marcaMotores", "id" => "marcaMotorId", "text" => "marcaMotor"))
+                        ,"marcaVehiculoId" => array("label" => "marcaVehiculoId" ,"type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."marcaVehiculos", "id" => "marcaVehiculoId", "text" => "marcaVehiculo"))
+                        ,"des_modelo" => array("label" => "des_modelo" ,"type" => "varchar", "required" => true)
                         ,"parentId" => array("type" => "int","required" => false, "hidden" => true, "isTableCol" => false)
                         ,"parentRelationShip" => array("type" => "varchar","required" => false, "hidden" => true, "isTableCol" => false)
                     )

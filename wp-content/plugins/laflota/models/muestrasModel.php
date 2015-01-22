@@ -16,10 +16,6 @@ class muestras extends DBManagerModel{
                             `ftoma`,
                             `kanterior`,
                             `klactual`,
-                            `marcaMotorId`,
-                            `tipoMotorId`,
-                            `marcaVehiculoId`,
-                            `des_modelo`,
                             `vis100`,
                             `maxvis`,
                             `vis40`,
@@ -62,45 +58,35 @@ class muestras extends DBManagerModel{
         
         return $this->getDataGrid($query, $start, $params["limit"] , $params["sidx"], $params["sord"]);
     }
-
-    public function getVehiculosCliente($params = array()){
-        $entity = $this->entity();
-        $start = $params["limit"] * $params["page"] - $params["limit"];
-        $query = "SELECT `vehiculoId`,
-                        `clienteId` cliente,
-                        `placa`,
-                        `tipoMotorId`
-                    FROM ".$entity["tableName"]." i "
-                . "WHERE  `clienteId` = " . $params["filter"];
-        
-        if(array_key_exists('where', $params)){
-            if (is_array( $params["where"]->rules )){
-                $countRules = count($params["where"]->rules);
-                for($i = 0; $i < $countRules; $i++){
-                    switch($params["where"]->rules[$i]->field ){
-                        case "cliente": $params["where"]->rules[$i]->field = "clienteId"; break;
-                    }
-                }
-            }
-            
-           $query .= " AND (". $this->buildWhere($params["where"]) .")";
-        }
-        
-        return $this->getDataGrid($query, $start, $params["limit"] , $params["sidx"], $params["sord"]);
-    }
     
-    private function validateVehicles(){
+    private function validateMuestras(){
         $msj = "";
-        $query = "SELECT t.placa FROM laflota.wp_lf_extensionesUploadTmp t
-                    WHERE NOT EXISTS(
-                                            SELECT 1 FROM laflota.wp_lf_vehiculos v
-                                            WHERE   v.placa = t.placa
+        $query = "SELECT t.nromuestra FROM ". $this->pluginPrefix ."muestrasUploadTmp t
+                    WHERE EXISTS(
+                                            SELECT 1 FROM ". $this->pluginPrefix ."muestras v
+                                            WHERE   v.nromuestra = t.nromuestra
                                     );";
         $result = $this->conn->get_col($query);
         
         
         foreach ($result as $num_linea => $linea){
-            $msj = $linea.": ".$this->resource->getWord("vehiculoNoExiste")."\n";
+            $msj .= $linea.": ".$this->resource->getWord("muestraExiste")."\n";
+        }
+        return $msj;
+    }
+    
+    private function validateVehicles(){
+        $msj = "";
+        $query = "SELECT t.placav FROM ". $this->pluginPrefix ."muestrasUploadTmp t
+                    WHERE NOT EXISTS(
+                                            SELECT 1 FROM ". $this->pluginPrefix ."vehiculos v
+                                            WHERE   v.placa = t.placav
+                                    );";
+        $result = $this->conn->get_col($query);
+        
+        
+        foreach ($result as $num_linea => $linea){
+            $msj .= $linea.": ".$this->resource->getWord("vehiculoNoExiste")."\n";
         }
         return $msj;
     }
@@ -108,15 +94,96 @@ class muestras extends DBManagerModel{
     public function addMasterData($param){
         
         switch($param){
-            case "extensiones":
-                    $query = "INSERT INTO `laflota`.`". $this->pluginPrefix ."extensiones`
+            case "estado":
+                    $query = "INSERT INTO `". $this->pluginPrefix ."estadoMuestras`(`estadoMuestra`)
+                                SELECT u.estado 
+                                FROM ". $this->pluginPrefix ."muestrasUploadTmp u
+                                      LEFT JOIN ". $this->pluginPrefix ."estadoMuestras c ON u.estado = c.estadoMuestra
+                                WHERE c.estadoMuestraId IS NULL
+                                GROUP BY u.estado"; break;
+            case "tipomuestra":
+                    $query = "INSERT INTO `". $this->pluginPrefix ."tipoMuestras`(`tipoMuestra`)
+                                SELECT u.muestra 
+                                FROM ". $this->pluginPrefix ."muestrasUploadTmp u
+                                      LEFT JOIN ". $this->pluginPrefix ."tipoMuestras c ON u.muestra = c.tipoMuestra
+                                WHERE c.tipoMuestraId IS NULL
+                                GROUP BY u.muestra"; break;
+            case "muestras":
+                    $query = "INSERT INTO `". $this->pluginPrefix ."muestras`
                                     (`vehiculoId`,
-                                    `kilometraje`,
+                                    `nromuestra`,
+                                    `estadoMuestraId`,
+                                    `tipoMuestraId`,
+                                    `componentenumero`,
+                                    `ftoma`,
+                                    `kanterior`,
+                                    `klactual`,
+                                    `vis100`,
+                                    `maxvis`,
+                                    `vis40`,
+                                    `fe`,
+                                    `maxfe`,
+                                    `cr`,
+                                    `maxcr`,
+                                    `pb`,
+                                    `maxpb`,
+                                    `al`,
+                                    `maxal`,
+                                    `cu`,
+                                    `maxcu`,
+                                    `si`,
+                                    `maxsi`,
+                                    `hollin`,
+                                    `maxhollin`,
+                                    `tbn`,
+                                    `maxtbn`,
+                                    `agua`,
+                                    `maxagua`,
+                                    `combustible`,
+                                    `maxcombustible`,
+                                    `escritica`,
+                                    `observaciones`,
                                     `date_entered`,
                                     `created_by`)
-                                SELECT vehiculoId, t.kilometraje, t.date_entered, t.created_by
-                                FROM ". $this->pluginPrefix ."extensionesUploadTmp t
-                                        JOIN ". $this->pluginPrefix ."vehiculos v ON v.placa = t.placa"; break;
+                                SELECT `vehiculoId`,
+                                    `nromuestra`,
+                                    `estadoMuestraId`,
+                                    `tipoMuestraId`,
+                                    `componentenumero`,
+                                    `ftoma`,
+                                    `kanterior`,
+                                    `klactual`,
+                                    `vis100`,
+                                    `maxvis`,
+                                    `vis40`,
+                                    `fe`,
+                                    `maxfe`,
+                                    `cr`,
+                                    `maxcr`,
+                                    `pb`,
+                                    `maxpb`,
+                                    `al`,
+                                    `maxal`,
+                                    `cu`,
+                                    `maxcu`,
+                                    `si`,
+                                    `maxsi`,
+                                    `hollin`,
+                                    `maxhollin`,
+                                    `tbn`,
+                                    `maxtbn`,
+                                    `agua`,
+                                    `maxagua`,
+                                    `combustible`,
+                                    `maxcombustible`,
+                                    `escritica`,
+                                    `observaciones`,
+                                    mt.date_entered,
+                                    mt.created_by
+                                FROM `". $this->pluginPrefix ."muestrasUploadTmp` mt
+                                        JOIN `". $this->pluginPrefix ."vehiculos` v ON v.placa = mt.placav
+                                        JOIN `". $this->pluginPrefix ."estadoMuestras` e ON e.estadoMuestra = mt.estado
+                                        JOIN `". $this->pluginPrefix ."tipoMuestras` t ON t.tipoMuestra = mt.muestra"; break;
         }
         $this->conn->query($query);
     }
@@ -140,9 +207,17 @@ class muestras extends DBManagerModel{
             $file = $target_path.$fileName.".".$ext;
             if(move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
                 $arrayFile = file($file);
-                $validate = $this->validatorFile($arrayFile, array("PLACA","KILOMETRAJE"));
+                $validate = $this->validatorFile($arrayFile, array("placav","nromuestra","estado","muestra"
+                                                                    ,"componentenumero","ftoma","kanterior"
+                                                                    ,"klactual","vis100","maxvis","vis40"
+                                                                    ,"fe","maxfe","cr","maxcr","pb","maxpb"
+                                                                    ,"al","maxal","cu","maxcu","si","maxsi"
+                                                                    ,"hollin","maxhollin","tbn","maxtbn"
+                                                                    ,"agua","maxagua","combustible"
+                                                                    ,"maxcombustible","escritica","observaciones"
+                                                                ));
                 if($validate["result"]){
-                    $table = $this->pluginPrefix."extensionesUploadTmp";
+                    $table = $this->pluginPrefix."muestrasUploadTmp";
                     if($this->truncateTable($table)){
                         $lines = 0;
                         $record = array();
@@ -150,24 +225,62 @@ class muestras extends DBManagerModel{
                         $date_entered = date("Y-m-d H:i:s");
                         $created_by = $this->currentUser->ID;
                         foreach ($validate["arrayResult"] as $num_linea => $linea){
-                            $record[] = "'".trim(implode("','",$linea))."','".$date_entered."','".$created_by."'";
+                            $ftoma = explode("/", $linea[5]);
+                            $linea[5] = $ftoma[2]."-".$ftoma[1]."-".$ftoma[0];
+                            $r = "'".trim(implode("','",$linea))."','".$date_entered."','".$created_by."'";
+                            $r = str_replace("''", 'NULL', $r);
+                                    
+                            $record[] = $r;
                         }
                         $dataInsert = '('.implode("),(",$record).')';
                         $query = "INSERT INTO ".$table."
-                                    (`placa`,
-                                    `kilometraje`,
+                                    (`placav`,
+                                    `nromuestra`,
+                                    `estado`,
+                                    `muestra`,
+                                    `componentenumero`,
+                                    `ftoma`,
+                                    `kanterior`,
+                                    `klactual`,
+                                    `vis100`,
+                                    `maxvis`,
+                                    `vis40`,
+                                    `fe`,
+                                    `maxfe`,
+                                    `cr`,
+                                    `maxcr`,
+                                    `pb`,
+                                    `maxpb`,
+                                    `al`,
+                                    `maxal`,
+                                    `cu`,
+                                    `maxcu`,
+                                    `si`,
+                                    `maxsi`,
+                                    `hollin`,
+                                    `maxhollin`,
+                                    `tbn`,
+                                    `maxtbn`,
+                                    `agua`,
+                                    `maxagua`,
+                                    `combustible`,
+                                    `maxcombustible`,
+                                    `escritica`,
+                                    `observaciones`,
                                     `date_entered`,
                                     `created_by`) VALUES " .$dataInsert;
                         $lines = $this->conn->query($query);
                         if($lines == count($validate["arrayResult"])){
                             $msj = $this->validateVehicles();
-                            if(empty($msj)){
-                                $this->addMasterData("extensiones");
+                            $msjMuestras = $this->validateMuestras();
+                            if(empty($msj) && empty($msjMuestras)){
+                                $this->addMasterData("estado");
+                                $this->addMasterData("tipomuestra");
+                                $this->addMasterData("muestras");
                                 echo $this->resource->getWord("fileUploaded");
                             }
                             else
-                                echo $msj;
-
+                                echo $msjMuestras.$msj;
                         }
                     }
                 }
@@ -179,17 +292,12 @@ class muestras extends DBManagerModel{
             else
                 echo $this->resource->getWord("fileUploadError");
         }
-    }
-    public function setMd5(){
-        return md5($_POST["clienteId"].$_POST["placa"].$_POST["tipoMotorId"]);
-    }    
+    }   
     
     public function add(){
-        $md5 = $this->setMd5(); 
-        $this->addRecord($this->entity(), $_POST, array("md5" => $md5,"date_entered" => date("Y-m-d H:i:s"), "created_by" => $this->currentUser->ID));
+        $this->addRecord($this->entity(), $_POST, array("date_entered" => date("Y-m-d H:i:s"), "created_by" => $this->currentUser->ID));
     }
     public function edit(){
-        $md5 = $this->setMd5(); 
         $this->updateRecord($this->entity(), $_POST, array("muestraId" => $_POST["muestraId"]), null, array("md5" => $md5));
     }
     public function del(){
@@ -220,40 +328,40 @@ class muestras extends DBManagerModel{
                     "tableName" => $this->pluginPrefix."muestras"
                     ,"entityConfig" => $CRUD
                     ,"atributes" => array(
-                        "muestraId" => array("type" => "int", "PK" => 0, "required" => false, "readOnly" => true, "autoIncrement" => true, "toolTip" => array("type" => "cell", "cell" => 2) )
-                        ,"vehiculo" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."vehiculos", "id" => "vehiculoId", "text" => "placa"))
+                        "muestraId" => array("label" => "id", "type" => "int", "PK" => 0, "required" => false, "readOnly" => true, "autoIncrement" => true, "toolTip" => array("type" => "cell", "cell" => 2) )
+                        ,"vehiculoId" => array("label" => "vehiculo","type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."vehiculos", "id" => "vehiculoId", "text" => "placa"))
                         ,"nromuestra" => array("type" => "varchar", "required" => true)
-                        ,"estadoMuestraId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."estadoMuestras", "id" => "estadoMuestraId", "text" => "estadoMuestra"))
-                        ,"tipoMuestraId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."tipoMuestras", "id" => "tipoMuestraId", "text" => "tipoMuestra"))
-                        ,"componentenumero" => array("type" => "int", "required" => true)
-                        ,"ftoma" => array("type" => "date", "required" => true)
-                        ,"kanterior" => array("type" => "int", "required" => true)
-                        ,"klactual" => array("type" => "int", "required" => true)
+                        ,"estadoMuestraId" => array("hidden" => true, "type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."estadoMuestras", "id" => "estadoMuestraId", "text" => "estadoMuestra"))
+                        ,"tipoMuestraId" => array("label" => "tipoMuestra","type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."tipoMuestras", "id" => "tipoMuestraId", "text" => "tipoMuestra"))
+                        ,"componentenumero" => array("type" => "int", "required" => true, "hidden" => true)
+                        ,"ftoma" => array("label" =>"fecha", "type" => "date", "required" => true)
+                        ,"kanterior" => array("type" => "int", "required" => true, "hidden" => true)
+                        ,"klactual" => array("type" => "int", "required" => true, "hidden" => true)
                         ,"vis100" => array("type" => "number", "required" => true)
-                        ,"maxvis" => array("type" => "number", "required" => true)
+                        ,"maxvis" => array("type" => "number", "required" => true, "hidden" => true)
                         ,"vis40" => array("type" => "number", "required" => true)
                         ,"fe" => array("type" => "number", "required" => true)
-                        ,"maxfe" => array("type" => "number", "required" => true)
+                        ,"maxfe" => array("type" => "number", "required" => true, "hidden" => true)
                         ,"cr" => array("type" => "number", "required" => true)
-                        ,"maxcr" => array("type" => "number", "required" => true)
+                        ,"maxcr" => array("type" => "number", "required" => true, "hidden" => true)
                         ,"pb" => array("type" => "number", "required" => true)
-                        ,"maxpb" => array("type" => "number", "required" => true)
+                        ,"maxpb" => array("type" => "number", "required" => true, "hidden" => true)
                         ,"al" => array("type" => "number", "required" => true)
-                        ,"maxal" => array("type" => "number", "required" => true)
+                        ,"maxal" => array("type" => "number", "required" => true, "hidden" => true)
                         ,"cu" => array("type" => "number", "required" => true)
-                        ,"maxcu" => array("type" => "number", "required" => true)
+                        ,"maxcu" => array("type" => "number", "required" => true, "hidden" => true)
                         ,"si" => array("type" => "number", "required" => true)
-                        ,"maxsi" => array("type" => "number", "required" => true)
+                        ,"maxsi" => array("type" => "number", "required" => true, "hidden" => true)
                         ,"hollin" => array("type" => "number", "required" => true)
-                        ,"maxhollin" => array("type" => "number", "required" => false)
+                        ,"maxhollin" => array("type" => "number", "required" => false, "hidden" => true)
                         ,"tbn" => array("type" => "number", "required" => true)
-                        ,"maxtbn" => array("type" => "number", "required" => false)
+                        ,"maxtbn" => array("type" => "number", "required" => false, "hidden" => true)
                         ,"agua" => array("type" => "number", "required" => false)
-                        ,"maxagua" => array("type" => "number", "required" => false)
+                        ,"maxagua" => array("type" => "number", "required" => false, "hidden" => true)
                         ,"combustible" => array("type" => "number", "required" => true)
-                        ,"maxcombustible" => array("type" => "number", "required" => false)
+                        ,"maxcombustible" => array("type" => "number", "required" => false, "hidden" => true)
                         ,"escritica" => array("type" => "enum", "required" => false)
-                        ,"observaciones" => array("type" => "text", "required" => false)
+                        ,"observaciones" => array("type" => "text", "required" => false, "hidden" => true)
                     )
                 );  
         return $data;

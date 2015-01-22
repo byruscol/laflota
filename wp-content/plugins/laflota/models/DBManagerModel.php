@@ -50,12 +50,12 @@ abstract class DBManagerModel extends DBManager{
 
                 if($numCols != $countheader )
                 {
-                    $msj .= "Error en la linea " . $num_linea.": deben ser ". $countheader ." columnas\n";
+                    $msj .= "Error en la línea " . $num_linea."(".$cols[0]."): ".$numCols." columnas, deben ser ". $countheader ." columnas\n";
                 }
 
                 if($num_linea == 0){
                     for($i = 0; $i < $countheader; $i++){
-                        if(strtolower($arrayHeader[$i]) != strtolower(trim($cols[$i]))){
+                        if(strtolower($arrayHeader[$i]) != strtolower(trim((empty($cols[$i]))? "NULL" :$cols[$i]))){
                             $msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$i] ." diferente a ". $cols[$i]."\n";
                         }
                     }

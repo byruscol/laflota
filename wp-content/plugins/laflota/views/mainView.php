@@ -39,4 +39,11 @@ function extensiones() {
     global $resource;
     require_once($viewFile);
 }
+
+function muestras() {
+    global $pluginPath;
+    global $viewFile;
+    global $resource;
+    require_once($viewFile);
+}
 ?>

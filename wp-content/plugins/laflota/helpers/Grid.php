@@ -91,6 +91,14 @@ class Grid extends DBManager
         switch($this->type){
             case "Grid":
                 switch($colType){
+                    case "text": $params["model"] = array_merge($params["model"]
+                                            ,array(
+                                                "edittype" => "textarea"
+                                                ,"editoptions" => array("rows" => 6, "cols" => 50)
+                                                ,"searchoptions" => array("searchhidden" => true)
+                                                ,'editrules' => array('edithidden' => true)
+                                                )
+                                        );break;
                     case 'int': $params["model"] = array_merge($params["model"]
                                             ,array(
                                                 'editrules' => array('integer' => true)
@@ -285,7 +293,8 @@ class Grid extends DBManager
     		$hidden = (isset($value['hidden']) && $value['hidden'] == true)? true: false;
                 $required = ($value['required'])? true: false;
                 $sortable = (isset($value['sortable']) )? $value['sortable']: true;
-                
+                $label = (array_key_exists('label', $value))? $value['label']: $col;
+                        
                 if($value["type"])
                     $editable = true;
                 
@@ -311,7 +320,7 @@ class Grid extends DBManager
                     $required = false;
                 
     		$model = array(
-    				'label' => $this->loc->getWord($col),
+    				'label' => $this->loc->getWord($label),
                                 'name'=> $col,
     				'index'=> $col,
     				'align' => 'center',
@@ -365,17 +374,19 @@ class Grid extends DBManager
                         $model["searchoptions"]["searchhidden"] = true;
                         $model["editrules"]["edithidden"] = true;
                         
-    			if($j == $numCols){
+                        $this->beforeShowForm .= "setTextAreaForm(form,'tr_".$col."');";
+    		}
+                
+                if($value['text'] || $colType == "text"){
+                    if($j == $numCols){
                             $k++;
                             $option = array('rowpos' => $k, 'colpos' => 1);
                             $model["formoptions"] = $option;
     			}
-    			$k++;
-    			$j=0;
-                        
-                        $this->beforeShowForm .= "setTextAreaForm(form,'tr_".$col."');";
-    		}
-
+                    $k++;
+                    $j=0;
+                }
+                
     		if($value['readOnly'])
                     $model["editoptions"]["dataInit"] = "@function(element) { jQuery(element).attr('readonly', 'readonly');}@";
     		
