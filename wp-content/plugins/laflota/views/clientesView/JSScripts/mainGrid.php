@@ -17,6 +17,12 @@ $params = array("numRows" => 10
                                                                             postDataObj["parent"] = "'.$_GET["view"].'";
                                                                             jQuery("#vehiculos").jqGrid("setGridParam",{postData: postDataObj})
                                                                                             .trigger("reloadGrid");
+                                                                                            
+                                                                            postDataObj = jQuery("#clientesUsuarios").jqGrid("getGridParam","postData");
+                                                                            postDataObj["filter"] = id;
+                                                                            postDataObj["parent"] = "'.$_GET["view"].'";
+                                                                            jQuery("#clientesUsuarios").jqGrid("setGridParam",{postData: postDataObj})
+                                                                                            .trigger("reloadGrid");
                                                                     }
                                                                 }'
                                                 )

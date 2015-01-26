@@ -18,22 +18,6 @@ $details = new Details($viewFile);
         </div>
     </div>
     
-    <div id="tabs" class="span11">
-        <ul id="optionsTab" class="nav nav-tabs">
-            <li class="active"><a href="#vehiculosTab" data-toggle="tab"><?php echo $resource->getWord("vehiculos"); ?></a></li>
-        </ul>
-        <div id="TabContent" class="tab-content">
-            <div class="tab-pane fade active" id="vehiculosTab">
-                <div class="spacer10"></div>
-                <div class="ui-jqgrid ui-widget ui-corner-all clear-margin span12" dir="ltr" style="">
-                    <table id="vehiculos"></table>
-                    <div id="vehiculosPager"></div>
-                </div>
-            </div>
-        </div>
-    </div> 
-    <div id="loading"><p><?php echo $resource->getWord("LoadingFile"); ?></p></div>
- 
 <script>
     jQuery(function () {
         

@@ -298,7 +298,7 @@ class muestras extends DBManagerModel{
         $this->addRecord($this->entity(), $_POST, array("date_entered" => date("Y-m-d H:i:s"), "created_by" => $this->currentUser->ID));
     }
     public function edit(){
-        $this->updateRecord($this->entity(), $_POST, array("muestraId" => $_POST["muestraId"]), null, array("md5" => $md5));
+        $this->updateRecord($this->entity(), $_POST, array("muestraId" => $_POST["muestraId"]), null, null);
     }
     public function del(){
         $this->eliminateRecord($this->entity(), array("muestraId" => $_POST["id"]));
@@ -306,18 +306,44 @@ class muestras extends DBManagerModel{
 
     public function detail($params = array()){
         $entity = $this->entity();
-        $query = "  SELECT `clienteId`,
-                            `ciudad` ciudadId,
-                            `tipoUsuario` tipousuarioId,
-                            `cedulaNit`,
-                            `propietario`,
-                            `comercial` comercialId,
-                            `email`
-                    FROM ".$entity["tableName"]." c
-                            JOIN ".$this->pluginPrefix."ciudades i ON i.ciudadId = c.ciudadId
-                            JOIN ".$this->pluginPrefix."tipousuario u ON u.tipousuarioId = c.tipousuarioId
-                            JOIN ".$this->pluginPrefix."comerciales co ON co.comercialId = c.comercialId
-                    WHERE c.`clienteId` = " . $params["filter"];
+        $query = "  SELECT muestraId, `placa` vehiculoId,
+                                    `nromuestra`,
+                                    `estadoMuestra` estadoMuestraId,
+                                    `tipoMuestra` tipoMuestraId,
+                                    `componentenumero`,
+                                    `ftoma`,
+                                    `kanterior`,
+                                    `klactual`,
+                                    `vis100`,
+                                    `maxvis`,
+                                    `vis40`,
+                                    `fe`,
+                                    `maxfe`,
+                                    `cr`,
+                                    `maxcr`,
+                                    `pb`,
+                                    `maxpb`,
+                                    `al`,
+                                    `maxal`,
+                                    `cu`,
+                                    `maxcu`,
+                                    `si`,
+                                    `maxsi`,
+                                    `hollin`,
+                                    `maxhollin`,
+                                    `tbn`,
+                                    `maxtbn`,
+                                    `agua`,
+                                    `maxagua`,
+                                    `combustible`,
+                                    `maxcombustible`,
+                                    `escritica`,
+                                    `observaciones`
+                                FROM ".$entity["tableName"]." m
+                                        JOIN ". $this->pluginPrefix ."tipoMuestras tm ON tm.tipoMuestraId = m.tipoMuestraId
+                                        JOIN `". $this->pluginPrefix ."vehiculos` v ON v.vehiculoId = m.vehiculoId
+                                        JOIN `". $this->pluginPrefix ."estadoMuestras` e ON e.estadoMuestraId = m.estadoMuestraId
+                                WHERE m.`muestraId` = " . $params["filter"];
         $this->queryType = "row";
         return $this->getDataGrid($query);
     }
@@ -331,36 +357,36 @@ class muestras extends DBManagerModel{
                         "muestraId" => array("label" => "id", "type" => "int", "PK" => 0, "required" => false, "readOnly" => true, "autoIncrement" => true, "toolTip" => array("type" => "cell", "cell" => 2) )
                         ,"vehiculoId" => array("label" => "vehiculo","type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."vehiculos", "id" => "vehiculoId", "text" => "placa"))
                         ,"nromuestra" => array("type" => "varchar", "required" => true)
-                        ,"estadoMuestraId" => array("hidden" => true, "type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."estadoMuestras", "id" => "estadoMuestraId", "text" => "estadoMuestra"))
+                        ,"estadoMuestraId" => array("label" => "estadonc","hidden" => true, "type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."estadoMuestras", "id" => "estadoMuestraId", "text" => "estadoMuestra"))
                         ,"tipoMuestraId" => array("label" => "tipoMuestra","type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."tipoMuestras", "id" => "tipoMuestraId", "text" => "tipoMuestra"))
                         ,"componentenumero" => array("type" => "int", "required" => true, "hidden" => true)
                         ,"ftoma" => array("label" =>"fecha", "type" => "date", "required" => true)
                         ,"kanterior" => array("type" => "int", "required" => true, "hidden" => true)
-                        ,"klactual" => array("type" => "int", "required" => true, "hidden" => true)
-                        ,"vis100" => array("type" => "number", "required" => true)
-                        ,"maxvis" => array("type" => "number", "required" => true, "hidden" => true)
-                        ,"vis40" => array("type" => "number", "required" => true)
-                        ,"fe" => array("type" => "number", "required" => true)
-                        ,"maxfe" => array("type" => "number", "required" => true, "hidden" => true)
-                        ,"cr" => array("type" => "number", "required" => true)
-                        ,"maxcr" => array("type" => "number", "required" => true, "hidden" => true)
-                        ,"pb" => array("type" => "number", "required" => true)
-                        ,"maxpb" => array("type" => "number", "required" => true, "hidden" => true)
-                        ,"al" => array("type" => "number", "required" => true)
-                        ,"maxal" => array("type" => "number", "required" => true, "hidden" => true)
-                        ,"cu" => array("type" => "number", "required" => true)
-                        ,"maxcu" => array("type" => "number", "required" => true, "hidden" => true)
-                        ,"si" => array("type" => "number", "required" => true)
-                        ,"maxsi" => array("type" => "number", "required" => true, "hidden" => true)
-                        ,"hollin" => array("type" => "number", "required" => true)
-                        ,"maxhollin" => array("type" => "number", "required" => false, "hidden" => true)
-                        ,"tbn" => array("type" => "number", "required" => true)
-                        ,"maxtbn" => array("type" => "number", "required" => false, "hidden" => true)
-                        ,"agua" => array("type" => "number", "required" => false)
-                        ,"maxagua" => array("type" => "number", "required" => false, "hidden" => true)
-                        ,"combustible" => array("type" => "number", "required" => true)
-                        ,"maxcombustible" => array("type" => "number", "required" => false, "hidden" => true)
-                        ,"escritica" => array("type" => "enum", "required" => false)
+                        ,"klactual" => array("type" => "int", "required" => true)
+                        ,"vis100" => array("type" => "number","width" => "90", "required" => true)
+                        ,"maxvis" => array("type" => "number","width" => "90", "required" => true, "hidden" => true)
+                        ,"vis40" => array("type" => "number","width" => "90", "required" => true)
+                        ,"fe" => array("type" => "number","width" => "90", "required" => true)
+                        ,"maxfe" => array("type" => "number","width" => "90", "required" => true, "hidden" => true)
+                        ,"cr" => array("type" => "number","width" => "90", "required" => true)
+                        ,"maxcr" => array("type" => "number","width" => "90", "required" => true, "hidden" => true)
+                        ,"pb" => array("type" => "number","width" => "90", "required" => true)
+                        ,"maxpb" => array("type" => "number","width" => "90", "required" => true, "hidden" => true)
+                        ,"al" => array("type" => "number","width" => "90", "required" => true)
+                        ,"maxal" => array("type" => "number","width" => "90", "required" => true, "hidden" => true)
+                        ,"cu" => array("type" => "number","width" => "90", "required" => true)
+                        ,"maxcu" => array("type" => "number","width" => "90", "required" => true, "hidden" => true)
+                        ,"si" => array("type" => "number","width" => "90", "required" => true)
+                        ,"maxsi" => array("type" => "number","width" => "90", "required" => true, "hidden" => true)
+                        ,"hollin" => array("type" => "number","width" => "90", "required" => true)
+                        ,"maxhollin" => array("type" => "number","width" => "90", "required" => false, "hidden" => true)
+                        ,"tbn" => array("type" => "number","width" => "90", "required" => true)
+                        ,"maxtbn" => array("type" => "number","width" => "90", "required" => false, "hidden" => true)
+                        ,"agua" => array("type" => "number","width" => "90", "required" => false)
+                        ,"maxagua" => array("type" => "number","width" => "90", "required" => false, "hidden" => true)
+                        ,"combustible" => array("type" => "number","width" => "90", "required" => true)
+                        ,"maxcombustible" => array("type" => "number","width" => "90", "required" => false, "hidden" => true)
+                        ,"escritica" => array("type" => "enum","width" => "90", "required" => false)
                         ,"observaciones" => array("type" => "text", "required" => false, "hidden" => true)
                     )
                 );  

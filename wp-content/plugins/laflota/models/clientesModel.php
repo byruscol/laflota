@@ -6,6 +6,33 @@ class clientes extends DBManagerModel{
    
     public function getList($params = array()){
         $entity = $this->entity();
+        /* 
+        //Migracion de usuarios.
+        $query = "SELECT `clienteId`,
+                        `ciudadId`,
+                        `tipousuarioId`,
+                        `cedulaNit`,
+                        `propietario`,
+                        `comercialId`,
+                        `email`,
+                        `confirmacion`
+                        `date_entered`
+                    FROM ".$entity["tableName"]." i";  
+        
+        $results = $this->conn->get_results($query);
+        
+       foreach ($results as $dataObject){
+           $userdata = array(
+                'user_login'  =>  $dataObject->cedulaNit,
+                'user_pass'   =>  $dataObject->cedulaNit,
+                'user_nicename' => $dataObject->propietario,
+                'display_name' => $dataObject->propietario
+            ); 
+           wp_insert_user($userdata);
+           $userdata = array();
+       }
+        */
+        
         $start = $params["limit"] * $params["page"] - $params["limit"];
         $query = "SELECT `clienteId`,
                         `ciudadId`,

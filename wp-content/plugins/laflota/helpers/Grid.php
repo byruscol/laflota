@@ -331,7 +331,9 @@ class Grid extends DBManager
     				'hidden' => (isset($value['hidden']) && $value['hidden'] == true)? true: false,
     				'classes'=> 'ellipsis'
     		);
-    		
+                if(array_key_exists('width', $value)){
+                    $model["width"] = $value['width'];
+                }
     		if(array_key_exists('references', $value))
     			$colType = "Referenced";
     		else

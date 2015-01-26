@@ -87,7 +87,6 @@ class Details extends DBManager
            (isset($_GET["task"]) && !empty($_GET["task"])) && 
            (isset($_GET["rowid"]) && !empty($_GET["rowid"])))
         {
-            
             $fileTemplate = (empty($templateParam))?$this->pluginPath."/views/".$_GET["page"]."View/".$_GET["page"]."Detail.php": $templateParam;
             if(is_file($fileTemplate)){
                 $stream = fopen($fileTemplate,"r");
@@ -96,9 +95,11 @@ class Details extends DBManager
                 $params = array("filter" => $_GET["rowid"]);
                 $data = $this->model->detail($params);
                 $entity = $this->model->entity();
+
                 foreach($data["data"] as $key => $value){
                     $value = str_replace("\n", '<br/>',$value);
-                    $template = str_replace("{".$key."-Label}", $this->resourceDetails->getWord($key), $template);
+                    $label = (array_key_exists('label', $entity["atributes"][$key]))? $entity["atributes"][$key]['label']: $key;
+                    $template = str_replace("{".$key."-Label}", $this->resourceDetails->getWord($label), $template);
                     $template = str_replace("{".$key."}", $value, $template);
                 }
                 echo $template;
