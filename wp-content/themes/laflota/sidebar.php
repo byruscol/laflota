@@ -1,5 +1,21 @@
 <aside>
     <section id="login_setion">
+    <?php if ( is_user_logged_in() ):
+        $current_user = wp_get_current_user();
+    ?>
+        <h3>¡Bienvenido!</h3>
+        <img src="<?php bloginfo('template_url')?>/images/login_icono_inner.png">
+        <form id="loginform" name="loginform">
+            <div id="fot_div">
+            <img id="foto_cliente" src="<?php bloginfo('template_url')?>/images/foto_cliente.png">
+            </div>
+            <h4><?php echo $current_user->display_name?></h4>
+            <h4><?php echo $current_user->user_login?></h4>
+
+            <a id="logout_btn" href="<?php echo wp_logout_url(); ?>" title="Logout">Cerrar sesión</a>
+        </form>	
+              
+    <?php else:?>
         <h3>Ingresar</h3>
         <img src="<?php bloginfo('template_url')?>/images/login_icono.png">
         <form id="loginform" name="loginform" action="<?php bloginfo('url')?>/wp-login.php" method="post">
@@ -14,6 +30,7 @@
                         <img src="<?php bloginfo('template_url')?>/images/login_icono_btn.png">
                 </button>
         </form>
+    <?php endif;?>
     </section>
     <section id="direcciones">
         <div id="direcciones1">

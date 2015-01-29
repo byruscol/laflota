@@ -47,7 +47,7 @@ class clientesUsuarios extends DBManagerModel{
                     ,"entityConfig" => $CRUD
                     ,"atributes" => array(
                         "clientesUsuariosId" => array("label"=>"id","type" => "int", "PK" => 0, "required" => false, "readOnly" => true, "autoIncrement" => true, "toolTip" => array("type" => "cell", "cell" => 2) )
-                        ,"ID" => array("label"=>"usuario","type" => "int", "required" => true, "references" => array("table" => $this->wpPrefix."users", "id" => "ID", "text" => "user_login"))
+                        ,"ID" => array("label"=>"usuario","type" => "int", "required" => true, "references" => array("table" => $this->wpPrefix."users", "id" => "ID", "text" => "display_name"))
                         ,"parentId" => array("type" => "int","required" => false, "hidden" => true, "isTableCol" => false)
                         ,"parentRelationShip" => array("type" => "varchar","required" => false, "hidden" => true, "isTableCol" => false)
                     )

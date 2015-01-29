@@ -286,8 +286,8 @@ header nav{
     float: left;
     height: auto;
     margin: 0;
-    padding-right: 5%;
-    width: 60%;
+    padding-right: 1%;
+    width: 63%;
 }
 
 .home_txt{
@@ -389,7 +389,8 @@ aside{
 
 
 #loginform h4{
-	text-align: center;
+    text-align: center;
+    line-height: 15px;
 }
 
 #login_btn, #submit, #wp-submit{
@@ -1083,7 +1084,7 @@ img{
 	background: #FFF url(images/contacto_globo.png);
 	background-position: 0 227px;
 	background-repeat: no-repeat;
-	width: 43%;
+	width: 41%;
 	height: 250px;
 	margin: 40px 5px 0 0;
 	float: right;
@@ -1369,11 +1370,24 @@ table.head tr td {
 	font-family: 'Oswald', sans-serif !important;
 	font-weight: 300;
 	color: #FFF;
-	margin: 7px -25px 0;
+	margin: 3px -25px 0;
 	cursor: pointer;
 	font-size: 14px;
+        text-align: center;
 }
 
 h3, .h3 {
     font-size: 18px;
+}
+
+#fot_div {
+    margin: 0 auto;
+    width: 90px;
+    height: 95px;
+    margin-bottom: 5px;
+}
+
+#fot_div img{
+    width: 100%;
+    margin: 0;
 }

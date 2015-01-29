@@ -6,32 +6,29 @@ class clientes extends DBManagerModel{
    
     public function getList($params = array()){
         $entity = $this->entity();
-        /* 
+        
         //Migracion de usuarios.
-        $query = "SELECT `clienteId`,
-                        `ciudadId`,
-                        `tipousuarioId`,
-                        `cedulaNit`,
-                        `propietario`,
-                        `comercialId`,
-                        `email`,
-                        `confirmacion`
-                        `date_entered`
-                    FROM ".$entity["tableName"]." i";  
+        $query = "SELECT `identificacion`,
+                        `propietario`
+                    FROM cliente c
+                    where not exists(
+                        SELECT 1 FROM  wp_users u
+                        where c.identificacion = u.user_login
+                    )";  
         
         $results = $this->conn->get_results($query);
         
        foreach ($results as $dataObject){
            $userdata = array(
-                'user_login'  =>  $dataObject->cedulaNit,
-                'user_pass'   =>  $dataObject->cedulaNit,
+                'user_login'  =>  $dataObject->identificacion,
+                'user_pass'   =>  $dataObject->identificacion,
                 'user_nicename' => $dataObject->propietario,
                 'display_name' => $dataObject->propietario
             ); 
            wp_insert_user($userdata);
            $userdata = array();
        }
-        */
+        
         
         $start = $params["limit"] * $params["page"] - $params["limit"];
         $query = "SELECT `clienteId`,
@@ -88,7 +85,7 @@ class clientes extends DBManagerModel{
     }    
     
     public function addMasterData($param){
-        
+        $entity = $this->entity();
         switch($param){
             case "clientes":
                     $query = "INSERT INTO `". $this->pluginPrefix ."ciudades`(`ciudad`)
@@ -133,6 +130,29 @@ class clientes extends DBManagerModel{
                                 WHERE c.comercialId IS NULL
                                 GROUP BY u.comercial"; break; 
             case "clientesInsert":
+                
+                    $query = "SELECT cedulaNit,propietario
+                                FROM ". $this->pluginPrefix ."clientesUploadTmp u
+                                         JOIN(
+                                                        SELECT MAX(ut.clientesUploadId) clientesUploadId
+                                                        FROM ". $this->pluginPrefix ."clientesUploadTmp ut
+                                                                        LEFT JOIN ". $this->pluginPrefix ."clientes c ON c.cedulaNit = ut.cedulaNit
+                                                        WHERE c.clienteId IS NULL
+                                                        GROUP BY ut.cedulaNit
+                                        )f ON f.clientesUploadId = u.clientesUploadId";  
+        
+                    $results = $this->conn->get_results($query);
+
+                   foreach ($results as $dataObject){
+                       $userdata = array(
+                            'user_login'  =>  $dataObject->cedulaNit,
+                            'user_pass'   =>  $dataObject->cedulaNit,
+                            'user_nicename' => $dataObject->propietario,
+                            'display_name' => $dataObject->propietario
+                        ); 
+                       wp_insert_user($userdata);
+                       $userdata = array();
+                   }
                     $query = "INSERT INTO `". $this->pluginPrefix ."clientes`
                                 (`ciudadId`,
                                 `tipousuarioId`,
@@ -156,7 +176,11 @@ class clientes extends DBManagerModel{
                                         JOIN ". $this->pluginPrefix ."ciudades ci ON ci.ciudad = u.ciudad
                                         JOIN ". $this->pluginPrefix ."tipousuario t ON t.tipoUsuario = u.tipousuario
                                         JOIN ". $this->pluginPrefix ."comerciales co ON co.comercial = u.comercial";break;
-        
+                    $this->conn->query($query);
+                    $query = "INSERT INTO `". $this->pluginPrefix ."clientesUsuarios`(clienteId, ID)" 
+                            . "SELECT clienteId,ID "
+                            . " FROM ".$this->wpPrefix ."users u"
+                            . "     JOIN ".$entity["tableName"]."clientes c on c.cedulaNit = u.user_login";
             case "clientesUpdate":
                     $query = "UPDATE ". $this->pluginPrefix ."clientes c
                                 JOIN (
@@ -330,14 +354,27 @@ class clientes extends DBManagerModel{
     }
     
     public function add(){
+        $entity = $this->entity();
         $md5 = $this->setMd5(); 
-        $this->addRecord($this->entity(), $_POST, array("md5" => $md5,"date_entered" => date("Y-m-d H:i:s"), "created_by" => $this->currentUser->ID));
+        $this->addRecord($entity, $_POST, array("md5" => $md5,"date_entered" => date("Y-m-d H:i:s"), "created_by" => $this->currentUser->ID));
+        if($this->LastId > 0 && !empty($this->LastId)){
+            $userdata = array(
+                            'user_login'  =>  $_POST["cedulaNit"],
+                            'user_pass'   =>  $_POST["cedulaNit"],
+                            'user_nicename' => $_POST["propietario"],
+                            'display_name' => $_POST["propietario"]
+                        ); 
+            $user_id = wp_insert_user($userdata);
+            
+            $this->addRecord($entity["relationship"]["clientesUsuarios"], array("clienteId" => $this->LastId, "ID" => $user_id), array("date_entered" => date("Y-m-d H:i:s"), "created_by" => $this->currentUser->ID));
+        }
     }
     public function edit(){
         $md5 = $this->setMd5(); 
         $this->updateRecord($this->entity(), $_POST, array("clienteId" => $_POST["clienteId"]), null, array("md5" => $md5));
     }
     public function del(){
+        //wp_delete_user( $current_user->ID );
         $this->eliminateRecord($this->entity(), array("clienteId" => $_POST["id"]));
     }
 
@@ -373,6 +410,16 @@ class clientes extends DBManagerModel{
                         ,"comercialId" => array("type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."comerciales", "id" => "comercialId", "text" => "comercial"))
                         ,"email" => array("type" => "email", "required" => true)
                         ,"confirmacion" => array("type" => "enum", "required" => true)
+                    )
+                    ,"relationship" => array(
+                        "clientesUsuarios" => array(
+                            "tableName" => $this->pluginPrefix."clientesUsuarios"
+                            ,"atributes" => array(
+                                "clientesUsuariosId" => array("type" => "int", "PK" => 0, "required" => false, "readOnly" => true, "autoIncrement" => true, "toolTip" => array("type" => "cell", "cell" => 2) )
+                                ,"clienteId" => array("type" => "int", "required" => true)
+                                ,"ID" => array("type" => "int", "required" => true)
+                            )
+                        )
                     )
                 );
         return $data;

@@ -23,6 +23,11 @@ $params = array("numRows" => 10
                                                                             postDataObj["parent"] = "'.$_GET["view"].'";
                                                                             jQuery("#clientesUsuarios").jqGrid("setGridParam",{postData: postDataObj})
                                                                                             .trigger("reloadGrid");
+                                                                                            
+                                                                            postDataObj = jQuery("#miFlota").jqGrid("getGridParam","postData");
+                                                                            postDataObj["filter"] = id;
+                                                                            jQuery("#miFlota").jqGrid("setGridParam",{postData: postDataObj})
+                                                                                            .trigger("reloadGrid");
                                                                     }
                                                                 }'
                                                 )
