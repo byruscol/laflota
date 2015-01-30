@@ -359,6 +359,10 @@ class Grid extends DBManager
                         $model["editoptions"]["defaultValue"] = "@function(g){return '".date("Y-m-d H:i:s", time())."'}@";
                     }
                 
+                if(array_key_exists('formatter', $value)){
+                        $model["formatter"] = $value["formatter"];
+                }
+                    
                 if(array_key_exists('downloadFile', $value) && $value['downloadFile']["show"]){
                     
                     $icon = $this->pluginURL."images/file.jpg";
@@ -521,6 +525,8 @@ class Grid extends DBManager
                                     gridview: true,
                                     height: "100%",
                                     autowidth: true,
+                                    altRows:true,
+                                    altclass:"'.$this->params["altclass"].'",
                                     editurl: "'.$this->pluginURL.'edit.php?controller='.$this->view.'",
                                     caption:"' . $this->loc->getWord($this->view) . '",
                                     beforeRequest: function() {

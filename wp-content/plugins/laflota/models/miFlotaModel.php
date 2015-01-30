@@ -35,6 +35,11 @@ class miFlota extends DBManagerModel{
         $params["filter"] = $this->currentUser->ID;
         return $this->getList($params);
     }
+    
+    public function report(){
+        print_r($_GET);
+    }
+    
     public function add(){}
     public function edit(){}
     public function del(){}
@@ -53,9 +58,12 @@ class miFlota extends DBManagerModel{
                         ,"marcaMotorId" => array("label" => "marcaMotor", "hidden" => true ,"type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."marcaMotores", "id" => "marcaMotorId", "text" => "marcaMotor"))
                         ,"marcaVehiculoId" => array("label" => "marcaVehiculo", "hidden" => true ,"type" => "int", "required" => true, "references" => array("table" => $this->pluginPrefix."marcaVehiculos", "id" => "marcaVehiculoId", "text" => "marcaVehiculo"))
                         ,"des_modelo" => array("label" => "modelo", "hidden" => true ,"type" => "varchar", "required" => true)
-                        ,"motor" => array("type" => "int","required" => false, "readOnly" => true, "isTableCol" => false)
-                        ,"caja" => array("type" => "int","required" => false, "readOnly" => true, "isTableCol" => false)
-                        ,"diferencial" => array("type" => "int","required" => false, "readOnly" => true, "isTableCol" => false)
+                        ,"motor" => array("type" => "int","required" => false, "readOnly" => true, "isTableCol" => false,"formatter" => "@function(cellvalue, options, rowObject){" 
+                                            . "return '<a title=\"'+cellvalue+'\" href=\"".$this->pluginURL."downloadReport.php?controller=miFlota&type=motor&id='+rowObject[0]+'\" target=\"_blank\"><img src=\"".$this->pluginURL."images/informes_motor_btn.png\"/> </a>';}@")
+                        ,"caja" => array("type" => "int","required" => false, "readOnly" => true, "isTableCol" => false,"formatter" => "@function(cellvalue, options, rowObject){" 
+                                            . "return '<a title=\"'+cellvalue+'\" href=\"".$this->pluginURL."downloadReport.php?controller=miFlota&type=caja&id='+rowObject[0]+'\" target=\"_blank\"><img src=\"".$this->pluginURL."images/informes_caja_btn.png\"/> </a>';}@")
+                        ,"diferencial" => array("type" => "int","required" => false, "readOnly" => true, "isTableCol" => false,"formatter" => "@function(cellvalue, options, rowObject){" 
+                                            . "return '<a title=\"'+cellvalue+'\" href=\"".$this->pluginURL."downloadReport.php?controller=miFlota&type=diferencial&id='+rowObject[0]+'\" target=\"_blank\"><img src=\"".$this->pluginURL."images/informes_diferencial_btn.png\"/> </a>';}@")
                     )
                 );  
         return $data;

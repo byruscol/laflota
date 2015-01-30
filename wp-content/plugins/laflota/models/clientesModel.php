@@ -8,7 +8,7 @@ class clientes extends DBManagerModel{
         $entity = $this->entity();
         
         //Migracion de usuarios.
-        $query = "SELECT `identificacion`,
+       /* $query = "SELECT `identificacion`,
                         `propietario`
                     FROM cliente c
                     where not exists(
@@ -28,7 +28,7 @@ class clientes extends DBManagerModel{
            wp_insert_user($userdata);
            $userdata = array();
        }
-        
+        */
         
         $start = $params["limit"] * $params["page"] - $params["limit"];
         $query = "SELECT `clienteId`,

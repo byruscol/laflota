@@ -117,3 +117,42 @@ button, input, optgroup, select, textarea {
     text-align: center;
     font-size: 14px;
 }
+
+#largeModal table tr td {
+    border: none;
+}
+
+#largeModal table tr.ui-widget-content{
+    border: none;
+    background-color: #ffffff;
+}
+
+#largeModal table tr.jqgfirstrow td{
+    padding: 0 !important;
+}
+
+.stripingRows{
+    background-color: #ededed;
+    background-image: none;
+}
+
+#gbox_miFlota {
+    margin: 0 auto !important;
+}
+
+.ui-jqgrid .ui-jqgrid-pager {
+    height: auto !important;
+}
+
+.ui-jqgrid .ui-pg-input {
+    height: 20px;
+}
+
+.modal-header h4{
+    font-size: 16px;
+}
+
+.ellipsis img {
+    height: auto;
+    width: 140px;
+}

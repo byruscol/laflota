@@ -17,12 +17,11 @@
             <button id="submit" name="submit" class="btn btn-primary"><?php echo $resource->getWord("accept"); ?></button> 
         </form>
     </div>
-    
     <div class="span11">
         <div class="jqGrid">
             <div class="wrap">
                 <div id="icon-tools" class="icon32"></div>
-                <h2><?php echo $resource->getWord("clientes"); ?></h2>
+                <h2 style="float: left;"><?php echo $resource->getWord("clientes"); ?></h2> <a class="btn btn-primary" data-target="#largeModal" data-toggle="modal" href="#"><?php echo $resource->getWord("verFlotaCliente"); ?></a>
             </div>
             <div class="span12">
             <table id="clientes"></table>
@@ -56,6 +55,23 @@
     </div> 
 </div>
 <div id="loading"><p><?php echo $resource->getWord("LoadingFile"); ?></p></div>
+<div aria-hidden="true" aria-labelledby="largeModal" role="dialog" tabindex="-1" id="largeModal" class="modal fade" style="display: none;">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+            <h4 id="myModalLabel" class="modal-title"></h4>
+          </div>
+          <div class="modal-body">
+            <table id="miFlota"></table>
+            <div id="miFlotaPager"></div>
+          </div>
+          <div class="modal-footer">
+            <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+          </div>
+        </div>
+      </div>
+</div>
 <script>
     jQuery(function () {
         

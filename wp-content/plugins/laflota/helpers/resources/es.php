@@ -213,6 +213,7 @@ $locale = array(
                 ,"vehiculos" => "Vehículos"
                 ,"vehiculoId" => "Id"
                 ,"vehiculoNoExiste" => "El vehículo no existe en la base de datos"
+                ,"verFlotaCliente" => "ver la flota del cliente seleccionado"
                 ,"verificationCode" => "Código de verificación"
                 ,"visa" => "Visa"
             );
