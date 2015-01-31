@@ -5,7 +5,7 @@ require_once "../../commonVehiculosGrid.php";
 header('Content-type: text/javascript');
 $params["sortname"] = "placa";
 $params["altclass"] = "stripingRows";
-$params["CRUD"] = array("add" => false, "edit" => false, "del" => true, "view" => false, "excel" => false);
+$params["CRUD"] = array("add" => false, "edit" => false, "search" => false, "del" => false, "view" => false, "excel" => false);
 $view = new buildView("miFlota", $params, "miFlota");
 ?>
 
@@ -17,4 +17,18 @@ jQuery('#largeModal').on('show.bs.modal', function (e) {
     var colData = rowData['propietario'];
     
     jQuery("#myModalLabel").text(colData);
+})
+
+jQuery('#searchPlacaButton').on('click', function (e) {
+    var val = jQuery("#placaInput").val();
+    filters = '';
+    if(val != ""){
+        filters = '{"groupOp":"AND","rules":[{"field":"placa","op":"cn","data":"'+val+'"}]}';
+    }
+    
+    postDataObj = jQuery("#miFlota").jqGrid("getGridParam","postData");
+    postDataObj["filters"] = filters;
+    	
+    jQuery("#miFlota").jqGrid("setGridParam",{postData: postDataObj})
+                    .trigger("reloadGrid");
 })

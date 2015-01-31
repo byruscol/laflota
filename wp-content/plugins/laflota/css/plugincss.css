@@ -156,3 +156,8 @@ button, input, optgroup, select, textarea {
     height: auto;
     width: 140px;
 }
+
+#searchSection{
+    width: 350px;
+    margin: 10px auto;
+}

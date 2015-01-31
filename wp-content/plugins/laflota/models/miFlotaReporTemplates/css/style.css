@@ -1,0 +1,72 @@
+div{
+    margin: 20px 0px 5px 32px;
+}
+p{
+    margin: 4px;
+}
+.header{
+    background-image: url(/var/www/laFlota/wp-content/plugins/laflota/models/miFlotaReporTemplates/css/img/logo.png);
+    background-repeat: no-repeat;
+    background-size: 100px;
+    height: 80px;
+    margin: 10px 0px 5px 25px;
+    padding-left: 90px;
+    padding-bottom: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    font-style: italic;
+    vertical-align: bottom;
+}
+table{
+    margin: 2px 0px 1px 0px;
+}
+
+table th, table td{
+    border: 1px solid #262261;
+    border-left: none;
+    padding: 2px 5px;
+}
+
+table th{
+    text-align: center;
+}
+
+.borderLeft{
+    border-left: #262261;
+}
+
+.width30{
+    width: 30px;
+}
+
+.width50{
+    width: 50px;
+}
+
+.width70{
+    width: 70px;
+}
+
+.width100{
+    width: 100px;
+}
+
+.width150{
+    width: 150px;
+}
+
+.width223{
+    width: 208px;
+}
+
+.width300{
+    width: 300px;
+}
+
+.width523{
+    width: 523px;
+}
+
+.fullWidth{
+    width: 667px;
+}

@@ -61,8 +61,13 @@
           <div class="modal-header">
             <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
             <h4 id="myModalLabel" class="modal-title"></h4>
+            
           </div>
           <div class="modal-body">
+            <div id="searchSection">
+                <input type="text" name="placa" id="placaInput" placeholder="<?php echo $resource->getWord("placa"); ?>" >
+                <a class="btn btn-primary" id="searchPlacaButton" href="#"><?php echo $resource->getWord("buscarPlaca"); ?></a>
+            </div>
             <table id="miFlota"></table>
             <div id="miFlotaPager"></div>
           </div>

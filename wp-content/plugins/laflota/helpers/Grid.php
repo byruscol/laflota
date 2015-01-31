@@ -545,6 +545,7 @@ class Grid extends DBManager
                                             {   edit:'.(($this->entity["entityConfig"]["edit"])? "true" : "false").'
                                                 ,add:'.(($this->entity["entityConfig"]["add"])? "true" : "false").'
                                                 ,del:'.(($this->entity["entityConfig"]["del"])? "true" : "false").'
+                                                ,search: '.(($this->entity["entityConfig"]["search"] === false)? "false" : "true").'
                                             }';
                                     if($this->entity["entityConfig"]["edit"]){
                                             $grid .= ',{ // edit options
