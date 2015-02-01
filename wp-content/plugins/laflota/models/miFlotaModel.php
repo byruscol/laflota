@@ -85,6 +85,116 @@ class miFlota extends DBManagerModel{
         return $r;
     }
     
+    public function setTableData($data){
+        $table = '<table cellspacing="0" align="center">';
+        $header = "<tr><th class='borderLeft'></th>";
+        $min = "<tr><td class='borderLeft smallFont'>".$this->resource->getWord('minValue')."</td>";
+        $val = "<tr><td class='borderLeft smallFont'>".$this->resource->getWord('Value')."</td>";
+        $max = "<tr><td class='borderLeft smallFont'>".$this->resource->getWord('maxValue')."</td>";
+        foreach($data["values"] as $key => $value){
+            if($value != null){
+                $header .= "<th class='smallFont'>"
+                            . $data["dates"][$key]
+                            . "</th>";
+                $min .=  "<td class='smallFont'>"
+                        . $data["min"][$key]
+                        . "</td>";
+                $val .=  "<td class='smallFont'>"
+                        . (($value > $data["max"][$key])? "<span class='red'>".$value."</span>" : $value)
+                        . "</td>";
+                $max .=  "<td class='smallFont'>"
+                        . $data["max"][$key]
+                        . "</td>";
+            }
+        }
+        return  $table .= $header."</tr>".$min."</tr>".$val."</tr>".$max."</tr></table>";
+    }
+    
+    public function getChartLine($data){
+
+        define('PREFIX_DIR', 'tmp.muestras');   // images will be created here
+        define('PREFIX', 'muestras');   // prefix for the images, can be anything
+        $tmpfname = tempnam(PREFIX_DIR, PREFIX);
+        
+        require_once ($this->pluginPath.'/helpers/jpgraph/jpgraph.php');
+        require_once ($this->pluginPath.'/helpers/jpgraph/jpgraph_line.php');
+
+        $min = array_reverse($data["min"]);
+        $values = array_reverse($data["values"]);
+        $max =  array_reverse($data["max"]);
+        $dates =  array_reverse($data["dates"]);
+        
+        if(count($values) < 2){
+            array_unshift($min, $min[0]);
+            $min[] = $min[0];
+            
+            array_unshift($values, null);
+            $values[] = null;
+            
+            array_unshift($max, $max[0]);
+            $max[] = $max[0];
+            
+            
+            array_unshift($dates, '');
+            $dates[] = '';
+        }
+        
+        $tableData = $this->setTableData(array("min" => $min,"values" => $values, "max" => $max, "dates" => $dates));
+        
+        // Setup the graph
+        $graph = new Graph(310);
+        $graph->SetScale("textlin");
+
+        $theme_class=new UniversalTheme;
+
+        $graph->SetTheme($theme_class);
+        $graph->img->SetAntiAliasing(false);
+        $graph->title->Set($data["title"]);
+        $graph->SetBox(false);
+        
+        $graph->legend->SetPos(0.53,0,'center','top');
+
+        $graph->img->SetAntiAliasing();
+
+        $graph->yaxis->HideZeroLabel();
+        $graph->yaxis->HideLine(false);
+        $graph->yaxis->HideTicks(false,false);
+
+        $graph->xgrid->Show();
+        $graph->xgrid->SetLineStyle("solid");
+        $graph->xaxis->SetTickLabels($dates);
+        $graph->xgrid->SetColor('#E3E3E3');
+        $graph->xaxis->SetLabelAngle(55);
+        $graph->xaxis->SetLabelMargin(1); 
+
+        // Create the first line
+        $p1 = new LinePlot($min);
+        $graph->Add($p1);
+        $p1->SetColor("#FE642E");
+        $p1->SetLegend($this->resource->getWord('minValue'));
+
+        // Create the second line
+        $p2 = new LinePlot($values);
+        $graph->Add($p2);
+        $p2->SetColor("blue");
+        $p2->SetLegend($this->resource->getWord('Value'));
+        $p2->mark->SetType(MARK_FILLEDCIRCLE,'',1);
+        $p2->mark->SetFillColor('blue');
+        $p2->mark->SetSize(2);
+
+        // Create the third line
+        $p3 = new LinePlot($max);
+        $graph->Add($p3);
+        $p3->SetColor("red");
+        $p3->SetLegend($this->resource->getWord('maxValue'));
+
+        $graph->legend->SetFrameWeight(1);
+
+        // Output line
+        $graph->Stroke($tmpfname);
+        return array("src" => $tmpfname,"table" => $tableData);
+    }
+    
     public function report(){
         require_once($this->pluginPath.'/helpers/html2pdf/html2pdf.class.php');
         
@@ -92,7 +202,8 @@ class miFlota extends DBManagerModel{
         $muestrasData = $this->getmuestrasData();
         
         $template =  "<style>".file_get_contents(__DIR__."/miFlotaReporTemplates/css/style.css")."</style>";
-        $template .= file_get_contents(__DIR__."/miFlotaReporTemplates/".$_GET["type"].'template.inc');
+        //$template .= file_get_contents(__DIR__."/miFlotaReporTemplates/".$_GET["type"].'template.inc');
+        $template .= file_get_contents(__DIR__."/miFlotaReporTemplates/motortemplate.inc");
         
         $template = str_replace("{slogan}", $this->resource->getWord("slogan"), $template);
         
@@ -114,11 +225,57 @@ class miFlota extends DBManagerModel{
         $template = str_replace("{observacionesLabel}", $this->resource->getWord("observaciones"), $template);
         $template = str_replace("{muestraLabel}", $this->resource->getWord("nromuestra"), $template);
         $template = str_replace("{kilometrosLabel}", $this->resource->getWord("Kilometraje"), $template);
+        $template = str_replace("{tablaComponentes}", $this->pluginPath."/models/miFlotaReporTemplates/css/img/tabla.jpg", $template);
         
         $i = 1;
+        $feData = array("title" => $this->resource->getWord("fe"), "min" => array(), "values" => array(), "max" => array(), "dates" => array());
         if(count($muestrasData["data"]) > 0)
         {
             foreach($muestrasData["data"] as $row){
+                
+                $date = date_create($row->ftoma);
+                $row->ftoma = date_format($date, 'd/m/y');
+                
+                $feData["min"][] = 0;
+                $feData["values"][] = empty(($row->fe))? 0:$row->fe;
+                $feData["max"][] = empty(($row->maxfe))? 0:$row->maxfe;
+                $feData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                
+                $pbData["min"][] = 0;
+                $pbData["values"][] = empty(($row->pb))? 0:$row->pb;
+                $pbData["max"][] = empty(($row->maxpb))? 0:$row->maxpb;
+                $pbData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                
+                $cuData["min"][] = 0;
+                $cuData["values"][] = empty(($row->cu))? 0:$row->cu;
+                $cuData["max"][] = empty(($row->maxcu))? 0:$row->maxcu;
+                $cuData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                
+                $crData["min"][] = 0;
+                $crData["values"][] = empty(($row->cr))? 0:$row->cr;
+                $crData["max"][] = empty(($row->maxcr))? 0:$row->maxcr;
+                $crData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                
+                $alData["min"][] = 0;
+                $alData["values"][] = empty(($row->al))? 0:$row->al;
+                $alData["max"][] = empty(($row->maxal))? 0:$row->maxal;
+                $alData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                
+                $siData["min"][] = 0;
+                $siData["values"][] = empty(($row->si))? 0:$row->si;
+                $siData["max"][] = empty(($row->maxsi))? 0:$row->maxsi;
+                $siData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                
+                $vis100Data["min"][] = 0;
+                $vis100Data["values"][] = empty(($row->vis100))? 0:$row->vis100;
+                $vis100Data["max"][] = empty(($row->maxvis))? 0:$row->maxvis;
+                $vis100Data["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                
+                $hollinData["min"][] = 0;
+                $hollinData["values"][] = empty(($row->hollin))? 0:$row->hollin;
+                $hollinData["max"][] = empty(($row->maxhollin))? 0:$row->maxhollin;
+                $hollinData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                
                 $otrasVariables .= "<tr>"
                                     . "<td class='borderLeft'>".$row->ftoma."</td>"
                                     . "<td>".$row->combustible."</td>"
@@ -162,6 +319,45 @@ class miFlota extends DBManagerModel{
         $template = str_replace("{tipoAceiteRows}", $tipoAceite, $template);
         $template = str_replace("{infoMuestrasRows}", $infoMuestras, $template);
         
+        $fe = (count($feData["values"]) == 0)? array("src" => $this->resource->getWord("noDataLegend"),"table" => $this->resource->getWord("noDataLegend")):$this->getChartLine($feData);
+        $template = str_replace("{feLegend}", $this->resource->getWord("feLegend"), $template);
+        $template = str_replace("{feChart}", ((count($feData["values"]) == 0)?$fe["src"]:"<img src=".$fe["src"].">"), $template);
+        $template = str_replace("{feTable}", $fe["table"], $template);
+        
+        $pb = (count($pbData["values"]) == 0)? array("src" => $this->resource->getWord("noDataLegend"),"table" => $this->resource->getWord("noDataLegend")):$this->getChartLine($pbData);
+        $template = str_replace("{pbLegend}", $this->resource->getWord("pbLegend"), $template);
+        $template = str_replace("{pbChart}", ((count($pbData["values"]) == 0)?$pb["src"]:"<img src=".$pb["src"].">"), $template);
+        $template = str_replace("{pbTable}", $pb["table"], $template);
+        
+        $cu = (count($cuData["values"]) == 0)? array("src" => $this->resource->getWord("noDataLegend"),"table" => $this->resource->getWord("noDataLegend")):$this->getChartLine($cuData);
+        $template = str_replace("{cuLegend}", $this->resource->getWord("cuLegend"), $template);
+        $template = str_replace("{cuChart}", ((count($cuData["values"]) == 0)?$cu["src"]:"<img src=".$cu["src"].">"), $template);
+        $template = str_replace("{cuTable}", $cu["table"], $template);
+        
+        $cr = (count($crData["values"]) == 0)? array("src" => $this->resource->getWord("noDataLegend"),"table" => $this->resource->getWord("noDataLegend")):$this->getChartLine($crData);
+        $template = str_replace("{crLegend}", $this->resource->getWord("crLegend"), $template);
+        $template = str_replace("{crChart}", ((count($crData["values"]) == 0)?$cr["src"]:"<img src=".$cr["src"].">"), $template);
+        $template = str_replace("{crTable}", $cr["table"], $template);
+        
+        $al = (count($alData["values"]) == 0)? array("src" => $this->resource->getWord("noDataLegend"),"table" => $this->resource->getWord("noDataLegend")):$this->getChartLine($alData);
+        $template = str_replace("{alLegend}", $this->resource->getWord("alLegend"), $template);
+        $template = str_replace("{alChart}", ((count($alData["values"]) == 0)?$al["src"]:"<img src=".$al["src"].">"), $template);
+        $template = str_replace("{alTable}", $al["table"], $template);
+        
+        $si = (count($siData["values"]) == 0)? array("src" => $this->resource->getWord("noDataLegend"),"table" => $this->resource->getWord("noDataLegend")):$this->getChartLine($siData);
+        $template = str_replace("{siLegend}", $this->resource->getWord("siLegend"), $template);
+        $template = str_replace("{siChart}", ((count($siData["values"]) == 0)?$si["src"]:"<img src=".$si["src"].">"), $template);
+        $template = str_replace("{siTable}", $si["table"], $template);
+        
+        $vis100 = (count($vis100Data["values"]) == 0)? array("src" => $this->resource->getWord("noDataLegend"),"table" => $this->resource->getWord("noDataLegend")):$this->getChartLine($vis100Data);
+        $template = str_replace("{vis100Legend}", $this->resource->getWord("vis100Legend"), $template);
+        $template = str_replace("{vis100Chart}", ((count($vis100Data["values"]) == 0)?$vis100["src"]:"<img src=".$vis100["src"].">"), $template);
+        $template = str_replace("{vis100Table}", $vis100["table"], $template);
+        
+        $hollin = (count($hollinData["values"]) == 0)? array("src" => $this->resource->getWord("noDataLegend"),"table" => $this->resource->getWord("noDataLegend")):$this->getChartLine($hollinData);
+        $template = str_replace("{hollinLegend}", $this->resource->getWord("hollinLegend"), $template);
+        $template = str_replace("{hollinChart}", ((count($hollinData["values"]) == 0)?$hollin["src"]:"<img src=".$hollin["src"].">"), $template);
+        $template = str_replace("{hollinTable}", $hollin["table"], $template);
         
         try
         {
@@ -176,6 +372,7 @@ class miFlota extends DBManagerModel{
             exit;
         }
         echo $template;
+        unlink($fe);
     }
     
     public function add(){}

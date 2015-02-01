@@ -1,5 +1,5 @@
 div{
-    margin: 20px 0px 5px 32px;
+    margin: 20px 0px 5px 22px;
 }
 p{
     margin: 4px;
@@ -63,10 +63,35 @@ table th{
     width: 300px;
 }
 
+.width320{
+    width: 310px;
+}
+
 .width523{
     width: 523px;
 }
 
 .fullWidth{
     width: 667px;
+}
+
+.titleLight{
+    font-weight: 300; 
+}
+
+.smallFont{
+    font-weight: 100;
+    font-size: 8px;
+}
+
+.red{
+    color: #F00;
+}
+
+.border{
+    border: 1px solid #262261;
+}
+
+.noBorder{
+    border: none;
 }
