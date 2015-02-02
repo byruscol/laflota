@@ -49,8 +49,8 @@ abstract class DBManager{
 
             if($sortDirection != null)
                     $queryBuild .= " " . $sortDirection;
-
-            if($start != null && $limit != null)
+            
+            if(!is_null($start) && !is_null($limit))
                     $queryBuild .= " LIMIT " . $start . " , " . $limit;
 //echo $queryBuild;
             return $this->get($queryBuild, $this->queryType);

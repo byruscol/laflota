@@ -26,7 +26,7 @@ if(!empty($_POST["id"])){
 }elseif(!empty($_REQUEST["page"])){
     $controlerId = $_REQUEST["page"];
 }
-
+//echo "xcvxc";
 /*if(isset($_REQUEST["task"]) && !empty($_REQUEST["task"]))
     $_POST["method"] = $_REQUEST["task"];*/
 if(is_plugin_active($pluginName."/".$pluginName.".php"))

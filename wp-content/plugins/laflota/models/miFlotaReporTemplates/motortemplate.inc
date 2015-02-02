@@ -170,6 +170,7 @@
     </table>
 </page>
 <page>
+    <div class="header fullWidth">{slogan}</div>
     <div class="fullWidth">
         A continuación relacionamos las recomendaciones del grupo de ingeniería:
     </div>

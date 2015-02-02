@@ -32,8 +32,32 @@ class miFlota extends DBManagerModel{
         return $this->getDataGrid($query, $start, $params["limit"] , $params["sidx"], $params["sord"]);
     }
     public function geMyFleet($params) {
-        $params["filter"] = $this->currentUser->ID;
-        return $this->getList($params);
+        $entity = $this->entity();
+        $start = $params["limit"] * $params["page"] - $params["limit"];
+        $query = "SELECT `vehiculoId`,
+                        `placa`,
+                        `tipoMotorId`,
+                        `marcaMotorId`,
+                        `marcaVehiculoId`,
+                        `des_modelo`
+                    FROM ".$entity["tableName"]." i"
+                    . " JOIN ".$this->pluginPrefix."clientesUsuarios c ON c.clienteId = i.clienteId"
+                . " WHERE c.ID = ".$this->currentUser->ID;
+        
+        if(array_key_exists('where', $params)){
+            if (is_array( $params["where"]->rules )){
+                $countRules = count($params["where"]->rules);
+                for($i = 0; $i < $countRules; $i++){
+                    switch($params["where"]->rules[$i]->field ){
+                        case "cliente": $params["where"]->rules[$i]->field = "clienteId"; break;
+                    }
+                }
+            }
+            
+           $query .= " AND (". $this->buildWhere($params["where"]) .")";
+        }
+        
+        return $this->getDataGrid($query, $start, $params["limit"] , $params["sidx"], $params["sord"]);
     }
     
     public function getVehicleData(){
@@ -283,9 +307,9 @@ class miFlota extends DBManagerModel{
                                     . "<td>".$row->tbn."</td>"
                                 . "</tr>";
                 $tipoAceite .= "<tr>"
-                                    . "<td class='borderLeft'>".$i."</td>"
-                                    . "<td>".$row->observaciones."</td>"
-                                    . "<td>".$row->ftoma."</td>"
+                                    . "<td class='borderLeft width30'>".$i."</td>"
+                                    . "<td class='width523'><p>".$row->observaciones."</p></td>"
+                                    . "<td class='width70'>".$row->ftoma."</td>"
                                 . "</tr>";
                 $infoMuestras .= "<tr>"
                                     . "<td class='borderLeft'>".$i."</td>"

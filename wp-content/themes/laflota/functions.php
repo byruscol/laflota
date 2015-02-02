@@ -1,4 +1,6 @@
 <?php
+/*error_reporting(E_ALL);
+ini_set('display_errors', '1');*/
 register_nav_menus(
             array(
                 'top-menu' => 'Menu superior'
@@ -15,5 +17,6 @@ function digwp_bloginfo_shortcode( $atts ) {
    ), $atts));
    return get_bloginfo($key);
 }
+
 add_shortcode('bloginfo', 'digwp_bloginfo_shortcode');
 ?>

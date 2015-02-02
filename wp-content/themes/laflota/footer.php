@@ -32,6 +32,7 @@
                 <div id="logo_c3"><a href="http://www.c3comunicaciones.com/" target="_blank"><img src="<?php bloginfo('template_url')?>/images/logo-c3.png" alt="Marca de agua C3"/></a></div>
             </div>
         </footer>
+        <?php wp_footer(); ?>
     </body>
 </html>
 

@@ -161,3 +161,11 @@ button, input, optgroup, select, textarea {
     width: 350px;
     margin: 10px auto;
 }
+
+#columna1 .ui-jqgrid-titlebar{
+    display: none;
+}
+
+.ui-jqgrid .ui-pg-table {
+    width: auto !important;
+}

@@ -24,7 +24,7 @@
                 <span>Contraseña</span>
                 <input type="password" name="pwd" id="user_pass" />
                 <input type="hidden" name="testcookie" value="1" />
-                <input type="hidden" name="redirect_to" value="http://localhost/laflota/wp-admin/nav-menus.php" />
+                <input type="hidden" name="redirect_to" value="http://localhost/laflota/cliente-front-end" />
                 <button id="wp-submit" type="submit" name="wp-submit">
                         Ingresar
                         <img src="<?php bloginfo('template_url')?>/images/login_icono_btn.png">

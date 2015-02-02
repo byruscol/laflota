@@ -21,9 +21,12 @@ class Grid extends DBManager
     public $validateFileSize = false;
     public $validateCode = array();
     public $fileId = array();
+    public $siteURL = "";
 
     function __construct($type = "table", $p, $v, $t, $y = "Grid") {
             global $resource;
+            global $siteURL;
+            $this->siteURL = $siteURL;
             $this->view = $v;
             $this->params = $p;
             $this->loc = $resource;
@@ -505,7 +508,7 @@ class Grid extends DBManager
                                     editrules: {number: true, required: true}
                             };
                     $grid.jqGrid({						
-                                    url:"admin-ajax.php",
+                                    url:"'.$this->siteURL.'/wp-admin/admin-ajax.php",
                                     datatype: "json",
                                     mtype: "POST",
                                     postData : {
