@@ -21,6 +21,7 @@ abstract class DBManager{
     protected $gbd;
 
     function __construct() {
+            
             global $wpdb;
             global $pluginURL;
             global $pluginPath;

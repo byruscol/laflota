@@ -12,7 +12,7 @@
             <h4><?php echo $current_user->display_name?></h4>
             <h4><?php echo $current_user->user_login?></h4>
 
-            <a id="logout_btn" href="<?php echo wp_logout_url(); ?>" title="Logout">Cerrar sesión</a>
+            <a id="logout_btn" href="<?php echo wp_logout_url(home_url()); ?>" title="Logout">Cerrar sesión</a>
         </form>	
               
     <?php else:?>

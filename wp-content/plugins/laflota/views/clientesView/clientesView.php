@@ -21,7 +21,7 @@
         <div class="jqGrid">
             <div class="wrap">
                 <div id="icon-tools" class="icon32"></div>
-                <h2 style="float: left;"><?php echo $resource->getWord("clientes"); ?></h2> <a class="btn btn-primary" data-target="#largeModal" data-toggle="modal" href="#"><?php echo $resource->getWord("verFlotaCliente"); ?></a>
+                <h2 style="float: left;"><?php echo $resource->getWord("clientes"); ?></h2> <a class="btn btn-primary" data-target="#flotaClienteModal" data-toggle="modal" href="#"><?php echo $resource->getWord("verFlotaCliente"); ?></a>
             </div>
             <div class="span12">
             <table id="clientes"></table>
@@ -54,8 +54,9 @@
         </div>
     </div> 
 </div>
+
 <div id="loading"><p><?php echo $resource->getWord("LoadingFile"); ?></p></div>
-<div aria-hidden="true" aria-labelledby="largeModal" role="dialog" tabindex="-1" id="largeModal" class="modal fade" style="display: none;">
+<div aria-hidden="true" aria-labelledby="largeModal" role="dialog" tabindex="-1" id="flotaClienteModal" class="modal fade" style="display: none;">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
@@ -64,12 +65,11 @@
             
           </div>
           <div class="modal-body">
-            <div id="searchSection">
-                <input type="text" name="placa" id="placaInput" placeholder="<?php echo $resource->getWord("placa"); ?>" >
-                <a class="btn btn-primary" id="searchPlacaButton" href="#"><?php echo $resource->getWord("buscarPlaca"); ?></a>
-            </div>
-            <table id="miFlota"></table>
-            <div id="miFlotaPager"></div>
+            <?php  
+                $template =  file_get_contents(__DIR__."/../miFlotaUserView/miFlotaUserView.php");
+                $template = str_replace("{placa}", $resource->getWord("placa"), $template);
+                echo $template = str_replace("{buscarPlaca}", $resource->getWord("buscarPlaca"), $template);  
+            ?>
           </div>
           <div class="modal-footer">
             <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>

@@ -9,7 +9,7 @@ $params["CRUD"] = array("add" => false, "edit" => false, "search" => false, "del
 $view = new buildView("miFlota", $params, "miFlota");
 ?>
 
-jQuery('#largeModal').on('show.bs.modal', function (e) {
+jQuery('#flotaClienteModal').on('show.bs.modal', function (e) {
     jQuery("#gview_miFlota > .ui-jqgrid-titlebar").hide()
     
     var rowId =jQuery("#clientes").jqGrid('getGridParam','selrow');  

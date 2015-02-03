@@ -23,7 +23,7 @@
                     <strong>LA FLOTA®</strong> agradece su presencia dentro de nuestro programa de mantenimiento y productividad y la confianza depositada para atender su vehículo. Esta comunidad permite ofrecerle a nuestros afiliados servicios y beneficios que garanticen mayor rendimiento y rentabilidad para usted, su conductor y su vehículo, a través de un completo programa de mantenimiento preventivo.
                 </p>
                 <p>
-                    Nos permitimos presentar a continuación el resultado de la muestra de Lubricante de su Motor, Los niveles de desgaste que se presentan en el informe son tendencias con las que se pueden prevenir fallas mayores y hacen parte del mantenimiento predictivo del motor.
+                    A continuación presentamos el resultado de la muestra de lubricante de su motor. Los niveles de desgaste que se presentan en el informe son tendencias con las cuales se pueden prevenir fallas mayores y hacen parte del mantenimiento predictivo del motor.
                 </p>
             </td>
         </tr>
@@ -209,9 +209,9 @@
 <page>
     <div class="fullWidth">
         <ul>
-            <li><p>Si el resultado de Su muestra es <strong>CRÍTICO</strong>, comuníquese con su asesor o con el grupo de productividad (Tel. 2948444 ext. 4507 Cel. 314-4116975), para ampliar la información y hacer las respectivas recomendaciones.</p></li>
+            <li><p>Si el resultado de su muestra es <strong>CRÍTICO</strong>, comuníquese con su asesor o con el grupo de productividad (Tel. 2948444 ext. 4507 Cel. 314-4116975), para ampliar la información y hacer las respectivas recomendaciones.</p></li>
             <li><p>Si el resultado de su muestra es <strong>PRECAUCIÓN</strong>, le informamos que su vehículo entro en seguimiento por parte de La Flota, Recuerde que este resultado no inhabilita la operación del vehículo, no obstante verifique el cumplimiento de las recomendaciones establecidas en el manual de usuario de su motor</p></li>
-            <li><p>Si el Resultadio de su muestra es <strong>NORMAL</strong>, por favor seguir con las practicas adecuadas de mantenimiento especificadas en el manual de usuario de su motor.</p></li>
+            <li><p>Si el resultado de su muestra es <strong>NORMAL</strong>, por favor seguir con las prácticas adecuadas de mantenimiento especificadas en el manual de usuario de su motor.</p></li>
         </ul>
     </div>
     <table cellspacing="0" align="center">
@@ -226,6 +226,7 @@
                 Para su mayor entendimiento, a continuación relacionamos una tabla en donde podrá observar los elementos que componen las partes de su motor.
                 </p>
                 <img style="margin: 10px 0 0 60px;" src="{tablaComponentes}">
+                <p>Para mayor información y tipos de rutinas, favor remitirse al manual de usuario de su motor</p>
             </td>
         </tr>
     </table>

@@ -1,7 +1,6 @@
 <?php
 /*error_reporting(E_ALL);
 ini_set('display_errors', '1');*/
-
 class mainController //extends resources
 {
     private $pluginPath = "";
@@ -84,6 +83,8 @@ class mainController //extends resources
         wp_enqueue_style( 'uiCss' );
         wp_register_style( 'gridCss', $this->pluginURL . 'css/jqGrid/ui.jqgrid.css');
         wp_enqueue_style( 'gridCss' );
+        wp_register_style( 'flexslider', $this->pluginURL . 'css/flexslider.css');
+        wp_enqueue_style( 'flexslider' );
         wp_register_style( 'pluginCss', $this->pluginURL . 'css/plugincss.css');
         wp_enqueue_style( 'pluginCss' );
         wp_register_style( 'normalizeCss', $this->pluginURL . 'css/normalize.css');
@@ -148,6 +149,10 @@ class mainController //extends resources
 	wp_enqueue_script( 'bootstrap-datepicker' );
 		
 	$this->headScripts[] = 'bootstrap-datepicker';
+        wp_register_script('flexslider', $this->pluginURL . 'js/jquery.flexslider-min.js',$this->headScripts);
+	wp_enqueue_script( 'flexslider' );
+		
+	$this->headScripts[] = 'flexslider';
     }
 
     function viewJSScripts() {

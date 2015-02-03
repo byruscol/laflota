@@ -8,6 +8,7 @@ abstract class DBManagerModel extends DBManager{
         public $mail;
         public $resource;
         function __construct() {
+            
             parent::__construct();
             global $resource;
             $this->mail = new mailSender();

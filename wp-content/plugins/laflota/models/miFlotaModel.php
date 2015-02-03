@@ -115,8 +115,10 @@ class miFlota extends DBManagerModel{
         $min = "<tr><td class='borderLeft smallFont'>".$this->resource->getWord('minValue')."</td>";
         $val = "<tr><td class='borderLeft smallFont'>".$this->resource->getWord('Value')."</td>";
         $max = "<tr><td class='borderLeft smallFont'>".$this->resource->getWord('maxValue')."</td>";
+        $i = 0;
         foreach($data["values"] as $key => $value){
-            if($value != null){
+            $i++;
+            if(!$data["fixed"] || ($data["fixed"] && $i > 1 && count($data["values"]) > $i)){
                 $header .= "<th class='smallFont'>"
                             . $data["dates"][$key]
                             . "</th>";
@@ -148,6 +150,8 @@ class miFlota extends DBManagerModel{
         $max =  array_reverse($data["max"]);
         $dates =  array_reverse($data["dates"]);
         
+        $fixed = false;
+        
         if(count($values) < 2){
             array_unshift($min, $min[0]);
             $min[] = $min[0];
@@ -161,9 +165,11 @@ class miFlota extends DBManagerModel{
             
             array_unshift($dates, '');
             $dates[] = '';
+            
+            $fixed = true;
         }
         
-        $tableData = $this->setTableData(array("min" => $min,"values" => $values, "max" => $max, "dates" => $dates));
+        $tableData = $this->setTableData(array("min" => $min,"values" => $values, "max" => $max, "dates" => $dates, "fixed" => $fixed));
         
         // Setup the graph
         $graph = new Graph(310);
@@ -219,7 +225,34 @@ class miFlota extends DBManagerModel{
         return array("src" => $tmpfname,"table" => $tableData);
     }
     
+    public function  getExtendedCriticalVehicles($id){
+        $query = "SELECT v.placa ,tieneMuestrasCriticasRecientes(v.vehiculoId) AS Q
+                    FROM ".$this->pluginPrefix."clientesUsuarios cu 
+                    JOIN ".$this->pluginPrefix."vehiculos v ON v.clienteId = cu.clienteId 
+                    WHERE cu.clienteID = ".$id." 
+                                    AND tieneMuestrasCriticasRecientes(v.vehiculoId) > 0";
+ 
+        return $this->getDataGrid($query, null, null , "Q", "DESC");
+    }
+
+
+    public function checkVehicleUser(){
+        $query = "SELECT COUNT(1) Q 
+                    FROM ".$this->pluginPrefix."clientesUsuarios cu
+                             JOIN ".$this->pluginPrefix."vehiculos v ON v.clienteId = cu.clienteId
+                    WHERE cu.ID = ".$this->currentUser->ID." AND v.vehiculoId = ".$_GET["id"];
+        $val = $this->get($query, "var");
+        
+        return ($val["data"] > 0)? true : false;
+    }
+    
     public function report(){
+        global $isCurrentUserLoggedIn;
+        $this->isCurrentUserLoggedIn = (function_exists ("is_user_logged_in"))?is_user_logged_in(): $isCurrentUserLoggedIn;
+        $vehicleInCliente = $this->checkVehicleUser();
+        if($this->isCurrentUserLoggedIn == 0 || (!$vehicleInCliente && $this->currentUser->caps["administrator"] != 1))
+            exit($this->resource->getWord("noPermisos"));
+        
         require_once($this->pluginPath.'/helpers/html2pdf/html2pdf.class.php');
         
         $vehicleData = $this->getVehicleData();

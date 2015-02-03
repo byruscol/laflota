@@ -118,3 +118,17 @@ function enableElements(el) {
         enableElements(el[i].children);
     }
 }
+
+jQuery(window).load(function() {
+    jQuery('.flexslider').flexslider({
+            animation: "slide",
+            animationLoop: false,
+            controlNav: false,
+            directionNav: true,
+            itemWidth: 96,
+            itemMargin: 5,
+            prevText: "",           //String: Set the text for the "previous" directionNav item
+            nextText: "",
+            slideshow: false
+    });
+});

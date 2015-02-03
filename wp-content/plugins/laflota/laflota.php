@@ -14,6 +14,7 @@ if(!function_exists('wp_get_current_user'))
     require_once(ABSPATH . "wp-includes/pluggable.php"); 
 wp_cookie_constants();
 $current_user = wp_get_current_user();
+$isCurrentUserLoggedIn = is_user_logged_in();
 
 require_once "pluginConfig.php";
 require_once "views/mainView.php";
