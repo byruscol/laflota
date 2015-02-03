@@ -19,16 +19,4 @@ jQuery('#flotaClienteModal').on('show.bs.modal', function (e) {
     jQuery("#myModalLabel").text(colData);
 })
 
-jQuery('#searchPlacaButton').on('click', function (e) {
-    var val = jQuery("#placaInput").val();
-    filters = '';
-    if(val != ""){
-        filters = '{"groupOp":"AND","rules":[{"field":"placa","op":"cn","data":"'+val+'"}]}';
-    }
-    
-    postDataObj = jQuery("#miFlota").jqGrid("getGridParam","postData");
-    postDataObj["filters"] = filters;
-    	
-    jQuery("#miFlota").jqGrid("setGridParam",{postData: postDataObj})
-                    .trigger("reloadGrid");
-})
+jQuery('#searchPlacaButton').on('click', searchDataByPlaca)

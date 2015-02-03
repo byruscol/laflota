@@ -225,14 +225,34 @@ class miFlota extends DBManagerModel{
         return array("src" => $tmpfname,"table" => $tableData);
     }
     
-    public function  getExtendedCriticalVehicles($id){
+    public function  getExtendedCriticalVehicles(){
+        global $isCurrentUserLoggedIn;
+        $this->isCurrentUserLoggedIn = (function_exists ("is_user_logged_in"))?is_user_logged_in(): $isCurrentUserLoggedIn;
+        if($this->isCurrentUserLoggedIn == 0)
+            exit($this->resource->getWord("noPermisos"));
+        
+        $condition = ($_POST["type"] == "user")? "cu.ID=".$this->currentUser->ID : "cu.clienteID = ".$_POST["filter"];
+        
         $query = "SELECT v.placa ,tieneMuestrasCriticasRecientes(v.vehiculoId) AS Q
                     FROM ".$this->pluginPrefix."clientesUsuarios cu 
                     JOIN ".$this->pluginPrefix."vehiculos v ON v.clienteId = cu.clienteId 
-                    WHERE cu.clienteID = ".$id." 
+                    WHERE ".$condition." 
                                     AND tieneMuestrasCriticasRecientes(v.vehiculoId) > 0";
  
-        return $this->getDataGrid($query, null, null , "Q", "DESC");
+        $criticas = $this->getDataGrid($query, null, null , "Q", "DESC");
+        
+        $query = "SELECT ve.placa, d.kilometraje
+                    FROM (
+                                    SELECT e.vehiculoId, max(kilometraje) kilometraje
+                                    FROM ".$this->pluginPrefix."clientesUsuarios cu 
+                                    JOIN ".$this->pluginPrefix."vehiculos v ON v.clienteId = cu.clienteId 
+                                    JOIN ".$this->pluginPrefix."extensiones e ON e.vehiculoId = v.vehiculoId
+                                    WHERE ".$condition." 
+                                    GROUP BY e.vehiculoId
+                            )d
+                            JOIN ".$this->pluginPrefix."vehiculos ve ON ve.vehiculoId = d.vehiculoId";
+        $extendidas = $this->getDataGrid($query, null, null , "placa", "ASC");
+        return array("customResponce"=> true, "data" => array("criticas" => $criticas["data"], "extendidas" => $extendidas["data"]));
     }
 
 

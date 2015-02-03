@@ -119,6 +119,59 @@ function enableElements(el) {
     }
 }
 
+function searchDataByPlaca(e) {
+    var val = "";
+    if(jQuery("#"+this.id).attr("class") == "aPlaca")
+        val = jQuery("#"+this.id).text();
+    else
+        val = jQuery("#placaInput").val();
+    filters = '';
+    if(val != ""){
+        filters = '{"groupOp":"AND","rules":[{"field":"placa","op":"cn","data":"'+val+'"}]}';
+    }
+    
+    postDataObj = jQuery("#miFlota").jqGrid("getGridParam","postData");
+    postDataObj["filters"] = filters;
+    	
+    jQuery("#miFlota").jqGrid("setGridParam",{postData: postDataObj})
+                    .trigger("reloadGrid");
+}
+
+function extendedCritial(response){
+    var jsonObj = jQuery.parseJSON(response);
+    //alert(response)
+    var cList = jQuery("#criticasDiv");
+    for(xx in jsonObj["criticas"]){
+         var li = jQuery('<li/>')
+                .addClass('placa')
+                .appendTo(cList);
+
+        var aaa = jQuery('<a/>', {
+                            href: '#',
+                            name: jsonObj["criticas"][xx].placa,
+                            id: jsonObj["criticas"][xx].placa,
+                            html: jsonObj["criticas"][xx].placa,
+                            class: "aPlaca"
+                        }).bind('click',searchDataByPlaca).appendTo(li);
+    }
+    
+    cList = jQuery("#extendidasDiv");
+    for(xx in jsonObj["extendidas"]){
+         var li = jQuery('<li/>')
+                .addClass('placa')
+                .appendTo(cList);
+
+        var aaa = jQuery('<a/>', {
+                            href: '#',
+                            title: jsonObj["extendidas"][xx].kilometraje,
+                            name: jsonObj["extendidas"][xx].placa,
+                            id: jsonObj["extendidas"][xx].placa,
+                            html: jsonObj["extendidas"][xx].placa,
+                            class: "aPlaca"
+                        }).bind('click',searchDataByPlaca).appendTo(li);
+    }
+}
+
 jQuery(window).load(function() {
     jQuery('.flexslider').flexslider({
             animation: "slide",

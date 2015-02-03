@@ -93,6 +93,11 @@ class mainController //extends resources
         wp_enqueue_style( 'datepickerCss' );
 
         $this->headScripts[] = 'jquery';
+        
+        /*wp_register_script('latestJquery', 'http://code.jquery.com/jquery-latest.min.js', $this->headScripts);
+        wp_enqueue_script('latestJquery');
+        
+        $this->headScripts[] = 'latestJquery';*/
         wp_register_script('locale_es', $this->pluginURL . 'js/jqGrid/grid.locale-es.js', $this->headScripts);
         wp_enqueue_script('locale_es');
 

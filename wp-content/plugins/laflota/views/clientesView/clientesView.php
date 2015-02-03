@@ -68,6 +68,9 @@
             <?php  
                 $template =  file_get_contents(__DIR__."/../miFlotaUserView/miFlotaUserView.php");
                 $template = str_replace("{placa}", $resource->getWord("placa"), $template);
+                $template = str_replace("{placasCriticas}", $resource->getWord("placasCriticas"), $template);
+                $template = str_replace("{placasExtendidas}", $resource->getWord("placasExtendidas"), $template);
+                
                 echo $template = str_replace("{buscarPlaca}", $resource->getWord("buscarPlaca"), $template);  
             ?>
           </div>
