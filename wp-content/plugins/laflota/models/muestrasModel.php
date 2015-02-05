@@ -240,14 +240,50 @@ class muestras extends DBManagerModel{
             $file = $target_path.$fileName.".".$ext;
             if(move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
                 $arrayFile = file($file);
-                $validate = $this->validatorFile($arrayFile, array("placav","nromuestra","estado","muestra"
-                                                                    ,"componentenumero","ftoma","kanterior"
-                                                                    ,"klactual","minvis","vis100","maxvis","vis40"
-                                                                    ,"minfe","fe","maxfe","mincr","cr","maxcr","minpb","pb","maxpb"
-                                                                    ,"minal","al","maxal","mincu","cu","maxcu","minsi","si","maxsi"
-                                                                    ,"minhollin","hollin","maxhollin","mintbn","tbn","maxtbn"
-                                                                    ,"minagua","agua","maxagua","mincombustible","combustible"
-                                                                    ,"maxcombustible","escritica","observaciones"
+                $validate = $this->validatorFile($arrayFile, array(array("column" => "placav", "type" => "string", "required" => true)
+                                                                    ,array("column" => "nromuestra", "type" => "string", "required" => true)
+                                                                    ,array("column" => "estado", "type" => "string", "required" => true)
+                                                                    ,array("column" => "muestra", "type" => "string", "required" => true)
+                                                                    ,array("column" => "componentenumero", "type" => "number", "required" => true)
+                                                                    ,array("column" => "ftoma", "type" => "date", "format" => "dd\/mm\/yyyy", "required" => true)
+                                                                    ,array("column" => "kanterior", "type" => "number", "required" => true)
+                                                                    ,array("column" => "klactual", "type" => "number", "required" => true)
+                                                                    ,array("column" => "minvis", "type" => "number", "required" => true)
+                                                                    ,array("column" => "vis100", "type" => "number", "required" => false)
+                                                                    ,array("column" => "maxvis", "type" => "number", "required" => true)
+                                                                    ,array("column" => "vis40", "type" => "number", "required" => false)
+                                                                    ,array("column" => "minfe", "type" => "number", "required" => true)
+                                                                    ,array("column" => "fe", "type" => "number", "required" => false)
+                                                                    ,array("column" => "maxfe", "type" => "number", "required" => true)
+                                                                    ,array("column" => "mincr", "type" => "number", "required" => true)
+                                                                    ,array("column" => "cr", "type" => "number", "required" => false)
+                                                                    ,array("column" => "maxcr", "type" => "number", "required" => true)
+                                                                    ,array("column" => "minpb", "type" => "number", "required" => true)
+                                                                    ,array("column" => "pb", "type" => "number", "required" => false)
+                                                                    ,array("column" => "maxpb", "type" => "number", "required" => true)
+                                                                    ,array("column" => "minal", "type" => "number", "required" => true)
+                                                                    ,array("column" => "al", "type" => "number", "required" => false)
+                                                                    ,array("column" => "maxal", "type" => "number", "required" => true)
+                                                                    ,array("column" => "mincu", "type" => "number", "required" => true)
+                                                                    ,array("column" => "cu", "type" => "number", "required" => false)
+                                                                    ,array("column" => "maxcu", "type" => "number", "required" => true)
+                                                                    ,array("column" => "minsi", "type" => "number", "required" => true)
+                                                                    ,array("column" => "si", "type" => "number", "required" => false)
+                                                                    ,array("column" => "maxsi", "type" => "number", "required" => true)
+                                                                    ,array("column" => "minhollin", "type" => "number", "required" => true)
+                                                                    ,array("column" => "hollin", "type" => "number", "required" => false)
+                                                                    ,array("column" => "maxhollin", "type" => "number", "required" => true)
+                                                                    ,array("column" => "mintbn", "type" => "number", "required" => true)
+                                                                    ,array("column" => "tbn", "type" => "number", "required" => false)
+                                                                    ,array("column" => "maxtbn", "type" => "number", "required" => true)
+                                                                    ,array("column" => "minagua", "type" => "number", "required" => true)
+                                                                    ,array("column" => "agua", "type" => "number", "required" => false)
+                                                                    ,array("column" => "maxagua", "type" => "number", "required" => true)
+                                                                    ,array("column" => "mincombustible", "type" => "number", "required" => true)
+                                                                    ,array("column" => "combustible", "type" => "number", "required" => false)
+                                                                    ,array("column" => "maxcombustible", "type" => "number", "required" => true)
+                                                                    ,array("column" => "escritica", "type" => "option", "options" => array("si","no"), "required" => true)
+                                                                    ,array("column" => "observaciones", "type" => "string", "required" => true)
                                                                 ));
                 if($validate["result"]){
                     $table = $this->pluginPrefix."muestrasUploadTmp";

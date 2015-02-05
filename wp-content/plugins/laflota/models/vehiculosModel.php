@@ -109,7 +109,10 @@ class vehiculos extends DBManagerModel{
             $file = $target_path.$fileName.".".$ext;
             if(move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
                 $arrayFile = file($file);
-                $validate = $this->validatorFile($arrayFile, array("PLACA","KILOMETRAJE"));
+                $validate = $this->validatorFile($arrayFile, array( array("column" => "PLACA", "type" => "string", "required" => true)
+                                                                    ,array("column" => "KILOMETRAJE", "type" => "number", "required" => true)
+                                                                )
+                                                );
                 if($validate["result"]){
                     $table = $this->pluginPrefix."extensionesUploadTmp";
                     if($this->truncateTable($table)){

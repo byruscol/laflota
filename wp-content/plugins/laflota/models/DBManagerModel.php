@@ -34,6 +34,30 @@ abstract class DBManagerModel extends DBManager{
             return $dateFormated;
         }
         
+        public function checkFormaDate($date, $format){
+            $formatOk = false;
+            $format = stripslashes($format);
+            $separator = (strpos($format,"/") !== false)? "/":"-";
+            $dateParts = explode($separator,$date);
+            $formatParts = explode($separator,$format);
+            
+            if(count($dateParts) == 3)
+            {
+                if($dayPosition =  array_search('dd', $formatParts) === false)
+                    $dayPosition = array_search('d', $formatParts);
+                
+                if($monthPosition = array_search('mm', $formatParts) === false)
+                    $monthPosition = array_search('m', $formatParts);
+                
+                if($yearPosition = array_search('yyyy', $formatParts) === false)
+                    $yearPosition = array_search('yy', $formatParts);
+                
+                $formatOk = checkdate($dateParts[$monthPosition], $dateParts[$dayPosition], $dateParts[$yearPosition]);
+            }
+            
+            return $formatOk;
+        }
+        
         public function getRelationshipDescriptionData($references, $filter){
             $query = "SELECT "  . $references["text"] . " Name "
                     . " FROM ". $references["table"]
@@ -56,14 +80,53 @@ abstract class DBManagerModel extends DBManager{
 
                 if($num_linea == 0){
                     for($i = 0; $i < $countheader; $i++){
-                        if(strtolower($arrayHeader[$i]) != strtolower(trim((empty($cols[$i]))? "NULL" :$cols[$i]))){
-                            $msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$i] ." diferente a ". $cols[$i]."\n";
+                        if(strtolower($arrayHeader[$i]["column"]) != strtolower(trim((empty($cols[$i]))? "NULL" :$cols[$i]))){
+                            $msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$i]["column"] ." diferente a ". $cols[$i]."\n";
                         }
                     }
                 }
                 else{
                     foreach ($cols as $num_col => $col){
-                        $cols[$num_col] = addslashes(trim($col));
+                        $col = trim($col);
+                        if($arrayHeader[$num_col]["required"] && (is_null($col) || $col == ""))
+                            $msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$num_col]["column"] ." es requerid@ \n";
+                        else{
+                            switch ($arrayHeader[$num_col]["type"]){
+                                case "string":  
+                                        if($arrayHeader[$num_col]["required"] && (is_null($col) || strlen($col) < 1))
+                                            $msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$num_col]["column"] ." (".$col.") no es un texto válido \n";
+                                        else
+                                            $col = (is_null($col) || $col == "")? "NULL": $col;
+                                    break;
+                                case "number":
+                                        $col = str_replace(",", ".", $col);
+                                        if($arrayHeader[$num_col]["required"] && (is_null($col) || !is_numeric($col)))
+                                            $msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$num_col]["column"] ." (".$col.") no es un número válido \n";
+                                        else
+                                            $col = (is_null($col) || $col == "")? "NULL": (is_numeric($col))? $col: $msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$num_col]["column"] ." (".$col.") no - es un número válido \n";;
+                                    break;
+                                case "option":
+                                        if($arrayHeader[$num_col]["required"] && is_null($col) || (!in_array($col, $arrayHeader[$num_col]["options"])))
+                                            $msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$num_col]["column"] ." (".$col.") no es una opcion válida (".(implode(",",$arrayHeader[$num_col]["options"])).") \n";
+                                        else
+                                            $col = (is_null($col) || $col == "")? "NULL": (in_array($col, $arrayHeader[$num_col]["options"]))? $col:$msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$num_col]["column"] ." (".$col.") no es una opcion válida (".(implode(",",$arrayHeader[$num_col]["options"])).") \n";;
+                                    break;                            
+                                case "date":
+                                        if($arrayHeader[$num_col]["required"] && (is_null($col) || !$this->checkFormaDate($col, $arrayHeader[$num_col]["format"])))
+                                            $msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$num_col]["column"] ." (".$col.") no es una fecha válida \n";
+                                        else
+                                            $col = (is_null($col) || $col == "")? "NULL": ($this->checkFormaDate($col, $arrayHeader[$num_col]["format"]))? $col:$msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$num_col]["column"] ." (".$col.") no es una fecha válida \n";;
+                                    break;
+                                case "email":
+                                        if($arrayHeader[$num_col]["required"] && !filter_var($col, FILTER_VALIDATE_EMAIL))
+                                            $msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$num_col]["column"] ." (".$col.") no es e-mail válido \n";
+                                        else
+                                            $col = (is_null($col) || $col == "")? "NULL": (filter_var($col, FILTER_VALIDATE_EMAIL))? $col:$msj .= "Error en la linea " . $num_linea.": ".$arrayHeader[$num_col]["column"] ." (".$col.") no es e-mail válido \n";
+                                    break;
+                            }
+
+                            $cols[$num_col] = addslashes(trim($col));
+                        }
                     }
                     $arrayResult[] = $cols;
                 }

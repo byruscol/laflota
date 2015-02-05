@@ -281,7 +281,21 @@ class clientes extends DBManagerModel{
             $file = $target_path.$fileName.".".$ext;
             if(move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
                 $arrayFile = file($file);
-                $validate = $this->validatorFile($arrayFile, array("PLACA","CIUDAD","TIPO","CEDULA / NIT","PROPIETARIO","COMERCIAL SIG","TIPO DE MOTOR","MARCA MOTOR","MARCA VEHICULO","MODELO","EMAIL","CONFIRMACION DE ENVIO"));
+                $validate = $this->validatorFile($arrayFile, array(  array("column" => "PLACA", "type" => "string", "required" => true)
+                                                                    ,array("column" => "CIUDAD", "type" => "string", "required" => true)
+                                                                    ,array("column" => "TIPO", "type" => "string", "required" => true)
+                                                                    ,array("column" => "CEDULA / NIT", "type" => "string", "required" => true)
+                                                                    ,array("column" => "PROPIETARIO", "type" => "string", "required" => true)
+                                                                    ,array("column" => "COMERCIAL SIG", "type" => "string", "required" => true)
+                                                                    ,array("column" => "TIPO DE MOTOR", "type" => "string", "required" => true)
+                                                                    ,array("column" => "MARCA MOTOR", "type" => "string", "required" => true)
+                                                                    ,array("column" => "MARCA VEHICULO", "type" => "string", "required" => true)
+                                                                    ,array("column" => "MODELO", "type" => "string", "required" => true)
+                                                                    ,array("column" => "EMAIL", "type" => "email", "required" => true)
+                                                                    ,array("column" => "CONFIRMACION DE ENVIO", "type" => "option", "options" => array("S","N"), "required" => true)
+
+                                                            )
+                                                );
                 if($validate["result"]){
                     $table = $this->pluginPrefix."clientesUploadTmp";
                     if($this->truncateTable($table)){
