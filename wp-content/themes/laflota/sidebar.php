@@ -18,18 +18,23 @@
     <?php else:?>
         <h3>Ingresar</h3>
         <img src="<?php bloginfo('template_url')?>/images/login_icono.png">
-        <form id="loginform" name="loginform" action="<?php bloginfo('url')?>/wp-login.php" method="post">
-                <span>Usuario</span><br/>
-                <input type="text" name="log" id="user_login" placeholder="NIT" />
-                <span>Contraseña</span>
-                <input type="password" name="pwd" id="user_pass" />
-                <input type="hidden" name="testcookie" value="1" />
-                <input type="hidden" name="redirect_to" value="http://localhost/laflota/cliente-front-end" />
-                <button id="wp-submit" type="submit" name="wp-submit">
-                        Ingresar
-                        <img src="<?php bloginfo('template_url')?>/images/login_icono_btn.png">
-                </button>
-        </form>
+        <?php $args = array(
+        'echo' => true,
+        'redirect' => get_permalink( get_page( 97 ) ), 
+        'form_id' => 'loginform',
+        'label_username' => "Usuario",
+        'label_password' => "Contraseña",
+        'label_log_in' => "Ingresar",
+        'id_username' => 'user_login',
+        'id_password' => 'user_pass',
+        'id_remember' => 'rememberme',
+        'id_submit' => 'wp-submit',
+        'remember' => false,
+        'value_username' => NULL,
+        'value_remember' => false );
+        
+        wp_login_form( $args );
+        ?>
     <?php endif;?>
     </section>
     <section id="direcciones">
