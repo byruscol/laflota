@@ -313,45 +313,45 @@ class miFlota extends DBManagerModel{
                 $date = date_create($row->ftoma);
                 $row->ftoma = date_format($date, 'd/m/y');
                 
-                $feData["min"][] = 0;
-                $feData["values"][] = empty(($row->fe))? 0:$row->fe;
-                $feData["max"][] = empty(($row->maxfe))? 0:$row->maxfe;
-                $feData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                $feData["min"][] = (empty($row->minfe))? 0:$row->minfe;
+                $feData["values"][] = (empty($row->fe))? 0:$row->fe;
+                $feData["max"][] = (empty($row->maxfe))? 0:$row->maxfe;
+                $feData["dates"][] = (empty($row->ftoma))? '':$row->ftoma;
                 
-                $pbData["min"][] = 0;
-                $pbData["values"][] = empty(($row->pb))? 0:$row->pb;
-                $pbData["max"][] = empty(($row->maxpb))? 0:$row->maxpb;
-                $pbData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                $pbData["min"][] = (empty($row->minpb))? 0:$row->minpb;
+                $pbData["values"][] = (empty($row->pb))? 0:$row->pb;
+                $pbData["max"][] = (empty($row->maxpb))? 0:$row->maxpb;
+                $pbData["dates"][] = (empty($row->ftoma))? '':$row->ftoma;
                 
-                $cuData["min"][] = 0;
-                $cuData["values"][] = empty(($row->cu))? 0:$row->cu;
-                $cuData["max"][] = empty(($row->maxcu))? 0:$row->maxcu;
-                $cuData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                $cuData["min"][] = (empty($row->mincu))? 0:$row->mincu;
+                $cuData["values"][] = (empty($row->cu))? 0:$row->cu;
+                $cuData["max"][] = (empty($row->maxcu))? 0:$row->maxcu;
+                $cuData["dates"][] = (empty($row->ftoma))? '':$row->ftoma;
                 
-                $crData["min"][] = 0;
-                $crData["values"][] = empty(($row->cr))? 0:$row->cr;
-                $crData["max"][] = empty(($row->maxcr))? 0:$row->maxcr;
-                $crData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                $crData["min"][] = (empty($row->mincr))? 0:$row->mincr;
+                $crData["values"][] = (empty($row->cr))? 0:$row->cr;
+                $crData["max"][] = (empty($row->maxcr))? 0:$row->maxcr;
+                $crData["dates"][] = (empty($row->ftoma))? '':$row->ftoma;
                 
-                $alData["min"][] = 0;
-                $alData["values"][] = empty(($row->al))? 0:$row->al;
-                $alData["max"][] = empty(($row->maxal))? 0:$row->maxal;
-                $alData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                $alData["min"][] = (empty($row->minal))? 0:$row->minal;
+                $alData["values"][] = (empty($row->al))? 0:$row->al;
+                $alData["max"][] = (empty($row->maxal))? 0:$row->maxal;
+                $alData["dates"][] = (empty($row->ftoma))? '':$row->ftoma;
                 
-                $siData["min"][] = 0;
-                $siData["values"][] = empty(($row->si))? 0:$row->si;
-                $siData["max"][] = empty(($row->maxsi))? 0:$row->maxsi;
-                $siData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                $siData["min"][] = (empty($row->minsi))? 0:$row->minsi;
+                $siData["values"][] = (empty($row->si))? 0:$row->si;
+                $siData["max"][] = (empty($row->maxsi))? 0:$row->maxsi;
+                $siData["dates"][] = (empty($row->ftoma))? '':$row->ftoma;
                 
-                $vis100Data["min"][] = 0;
-                $vis100Data["values"][] = empty(($row->vis100))? 0:$row->vis100;
-                $vis100Data["max"][] = empty(($row->maxvis))? 0:$row->maxvis;
-                $vis100Data["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                $vis100Data["min"][] = (empty($row->minvis))? 0:$row->minvis;
+                $vis100Data["values"][] = (empty($row->vis100))? 0:$row->vis100;
+                $vis100Data["max"][] = (empty($row->maxvis))? 0:$row->maxvis;
+                $vis100Data["dates"][] = (empty($row->ftoma))? '':$row->ftoma;
                 
-                $hollinData["min"][] = 0;
-                $hollinData["values"][] = empty(($row->hollin))? 0:$row->hollin;
-                $hollinData["max"][] = empty(($row->maxhollin))? 0:$row->maxhollin;
-                $hollinData["dates"][] = empty(($row->ftoma))? '':$row->ftoma;
+                $hollinData["min"][] = (empty($row->minhollin))? 0:$row->minhollin;
+                $hollinData["values"][] = (empty($row->hollin))? 0:$row->hollin;
+                $hollinData["max"][] = (empty($row->maxhollin))? 0:$row->maxhollin;
+                $hollinData["dates"][] = (empty($row->ftoma))? '':$row->ftoma;
                 
                 $otrasVariables .= "<tr>"
                                     . "<td class='borderLeft'>".$row->ftoma."</td>"
