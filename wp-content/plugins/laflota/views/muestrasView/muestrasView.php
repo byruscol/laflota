@@ -1,4 +1,3 @@
-<?php if(is_numeric("6.32")) echo "si"; else echo "no";?>
 <div class="row-fluid">
     <div class="row-fluid">
         <form id="uploadFiles" class="form-inline" enctype="multipart/form-data" method="post">

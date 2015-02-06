@@ -225,6 +225,23 @@ class miFlota extends DBManagerModel{
         return array("src" => $tmpfname,"table" => $tableData);
     }
     
+    public function getCantidadMuestrasCriticas($id){
+        $query = "SELECT m.escritica
+                    FROM ".$this->pluginPrefix."vehiculos v 
+                        JOIN ".$this->pluginPrefix."muestras m ON m.vehiculoId = v.vehiculoId 
+                    WHERE v.vehiculoId = ".$id;
+        $result = $this->getDataGrid($query, 0, 6 , "m.muestraId", "DESC");
+
+        $i = 0;
+        foreach ($result["data"] as $key => $value){
+            if($value->escritica == 'si'){
+                $i++;
+            }
+        }
+        return $i;
+    }
+    
+    
     public function  getExtendedCriticalVehicles(){
         global $isCurrentUserLoggedIn;
         $this->isCurrentUserLoggedIn = (function_exists ("is_user_logged_in"))?is_user_logged_in(): $isCurrentUserLoggedIn;
@@ -233,13 +250,20 @@ class miFlota extends DBManagerModel{
         
         $condition = ($_POST["type"] == "user")? "cu.ID=".$this->currentUser->ID : "cu.clienteID = ".$_POST["filter"];
         
-        $query = "SELECT v.placa ,tieneMuestrasCriticasRecientes(v.vehiculoId) AS Q
+        $query = "SELECT v.vehiculoId, v.placa
                     FROM ".$this->pluginPrefix."clientesUsuarios cu 
                     JOIN ".$this->pluginPrefix."vehiculos v ON v.clienteId = cu.clienteId 
-                    WHERE ".$condition." 
-                                    AND tieneMuestrasCriticasRecientes(v.vehiculoId) > 0";
+                    WHERE ".$condition;
  
-        $criticas = $this->getDataGrid($query, null, null , "Q", "DESC");
+        $vehicles = $this->getDataGrid($query, null, null , "placa", "ASC");
+        
+        $criticas = array();
+        
+        foreach($vehicles["data"] as $key => $value){
+            $CantidadMuestrasCriticas = $this->getCantidadMuestrasCriticas($value->vehiculoId);
+            if($CantidadMuestrasCriticas > 0)
+                $criticas["data"][]= array("placa" => $value->placa, "Q" => $CantidadMuestrasCriticas);
+        }
         
         $query = "SELECT ve.placa, d.kilometraje
                     FROM (

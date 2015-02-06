@@ -148,6 +148,7 @@ function extendedCritial(response){
 
         var aaa = jQuery('<a/>', {
                             href: '#',
+                            title: jsonObj["criticas"][xx].Q,
                             name: jsonObj["criticas"][xx].placa,
                             id: jsonObj["criticas"][xx].placa,
                             html: jsonObj["criticas"][xx].placa,

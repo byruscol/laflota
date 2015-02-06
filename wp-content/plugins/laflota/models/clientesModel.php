@@ -291,7 +291,7 @@ class clientes extends DBManagerModel{
                                                                     ,array("column" => "MARCA MOTOR", "type" => "string", "required" => true)
                                                                     ,array("column" => "MARCA VEHICULO", "type" => "string", "required" => true)
                                                                     ,array("column" => "MODELO", "type" => "string", "required" => true)
-                                                                    ,array("column" => "EMAIL", "type" => "email", "required" => true)
+                                                                    ,array("column" => "EMAIL", "type" => "email", "required" => false)
                                                                     ,array("column" => "CONFIRMACION DE ENVIO", "type" => "option", "options" => array("S","N"), "required" => true)
 
                                                             )
