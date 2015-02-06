@@ -36,6 +36,7 @@ abstract class DBManagerModel extends DBManager{
         
         public function checkFormaDate($date, $format){
             $formatOk = false;
+            $date = trim($date);
             $format = stripslashes($format);
             $separator = (strpos($format,"/") !== false)? "/":"-";
             $dateParts = explode($separator,$date);
@@ -43,15 +44,18 @@ abstract class DBManagerModel extends DBManager{
             
             if(count($dateParts) == 3)
             {
-                if($dayPosition =  array_search('dd', $formatParts) === false)
+                $dayPosition =  array_search('dd', $formatParts);
+                $monthPosition = array_search('mm', $formatParts);
+                $yearPosition = array_search('yyyy', $formatParts);
+                if(empty($dayPosition))
                     $dayPosition = array_search('d', $formatParts);
                 
-                if($monthPosition = array_search('mm', $formatParts) === false)
+                if(empty($monthPosition))
                     $monthPosition = array_search('m', $formatParts);
                 
-                if($yearPosition = array_search('yyyy', $formatParts) === false)
+                if(empty($yearPosition))
                     $yearPosition = array_search('yy', $formatParts);
-                
+                 
                 $formatOk = checkdate($dateParts[$monthPosition], $dateParts[$dayPosition], $dateParts[$yearPosition]);
             }
             
