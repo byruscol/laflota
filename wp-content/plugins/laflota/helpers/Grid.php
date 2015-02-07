@@ -61,6 +61,7 @@ class Grid extends DBManager
             $Relation = $this->getDataGrid($query, null, null, $references["text"], "ASC");
 
             foreach ( $Relation["data"] as $k => $v ){
+                    $Relation["data"][$k]->Name = str_replace("'", "`", $Relation["data"][$k]->Name);
                     $DataArray[] = $Relation["data"][$k]->Id.":".htmlspecialchars($Relation["data"][$k]->Name);
             }
             
@@ -404,7 +405,7 @@ class Grid extends DBManager
     		$model = array();
     	}
         
-    	$this->ColModel = str_ireplace('"@',"",json_encode($colmodel));
+    	$this->ColModel = str_ireplace('"@',"",json_encode($colmodel,JSON_UNESCAPED_UNICODE));
     	$this->ColModel = str_ireplace('@"',"",$this->ColModel);
     }
 	
