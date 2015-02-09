@@ -236,7 +236,7 @@ class muestras extends DBManagerModel{
                                 , "propietario", "comercial", "tipomotor"
                                 , "email", "confirmacion", "md5", "date_entered", "created_by");
         	
-        if($_FILES["file"]["type"]=="text/csv"){
+        if($_FILES["file"]["type"]=="text/csv" || $_FILES["file"]["type"]=="application/octet-stream" || $_FILES["file"]["type"]=="application/vnd.ms-excel"){
             $file = $target_path.$fileName.".".$ext;
             if(move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
                 $arrayFile = file($file);
@@ -370,7 +370,7 @@ class muestras extends DBManagerModel{
                 unlink($file);
             } 
             else
-                echo $this->resource->getWord("fileUploadError");
+                echo "sss".$this->resource->getWord("fileUploadError");
         }
     }   
     

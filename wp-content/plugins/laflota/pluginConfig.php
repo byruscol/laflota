@@ -20,7 +20,7 @@ $rootPath = $rp[0];
 $prot = explode("/",$_SERVER['SERVER_PROTOCOL']);
 $protocol = strtolower($prot[0]);
 $preFX = explode("/",$_SERVER['REQUEST_URI']);
-$URLPrefix = ($preFX[1] != $_SERVER['HTTP_HOST'] && $preFX[1] != "wp-admin")? $preFX[1] : '' ;
+$URLPrefix = ($preFX[1] != $_SERVER['HTTP_HOST'] && substr_count($preFX[1],"wp-") == 0)? $preFX[1] : '' ;
 $pluginName = "laflota";
 $siteURL = $protocol."://".$_SERVER['HTTP_HOST']."/".$URLPrefix;
 $pluginURL = $protocol."://".$_SERVER['HTTP_HOST']."/".$URLPrefix."/wp-content/plugins/".$pluginName."/";

@@ -277,7 +277,7 @@ class clientes extends DBManagerModel{
                                 , "marcavehiculo", "des_modelo", "email", "confirmacion", "md5"
                                 , "date_entered", "created_by");
         	
-        if($_FILES["file"]["type"]=="text/csv"){
+        if($_FILES["file"]["type"]=="text/csv" || $_FILES["file"]["type"]=="application/octet-stream" || $_FILES["file"]["type"]=="application/vnd.ms-excel"){
             $file = $target_path.$fileName.".".$ext;
             if(move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
                 $arrayFile = file($file);

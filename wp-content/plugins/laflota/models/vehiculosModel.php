@@ -105,7 +105,7 @@ class vehiculos extends DBManagerModel{
         $fileName = implode("_",$nameParts);
         $fileName = str_replace(array("'",".",",","*","@","?","!"), "_",$fileName);
         	
-        if($_FILES["file"]["type"]=="text/csv"){
+        if($_FILES["file"]["type"]=="text/csv" || $_FILES["file"]["type"]=="application/octet-stream" || $_FILES["file"]["type"]=="application/vnd.ms-excel"){
             $file = $target_path.$fileName.".".$ext;
             if(move_uploaded_file($_FILES['file']['tmp_name'], $file)) {
                 $arrayFile = file($file);
