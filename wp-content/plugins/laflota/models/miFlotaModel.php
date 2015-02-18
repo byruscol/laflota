@@ -77,27 +77,38 @@ class miFlota extends DBManagerModel{
                             `componentenumero`,
                             `ftoma`,
                             `klactual`,
+                            `minvis`,
                             `vis100`,
                             `maxvis`,
                             `vis40`,
+                            `minfe`,
                             `fe`,
                             `maxfe`,
+                            `mincr`,
                             `cr`,
                             `maxcr`,
+                            `minpb`,
                             `pb`,
                             `maxpb`,
+                            `minal`,
                             `al`,
                             `maxal`,
+                            `mincu`,
                             `cu`,
                             `maxcu`,
+                            `minsi`,
                             `si`,
                             `maxsi`,
+                            `minhollin`,
                             `hollin`,
                             `maxhollin`,
+                            `mintbn`,
                             `tbn`,
                             `maxtbn`,
+                            `minagua`,
                             `agua`,
                             `maxagua`,
+                            `mincombustible`,
                             `combustible`,
                             `maxcombustible`,
                             `escritica`,
@@ -126,7 +137,7 @@ class miFlota extends DBManagerModel{
                         . $data["min"][$key]
                         . "</td>";
                 $val .=  "<td class='smallFont'>"
-                        . (($value > $data["max"][$key])? "<span class='red'>".$value."</span>" : $value)
+                        . (($value > $data["max"][$key] || $value < $data["min"][$key])? "<span class='red'>".$value."</span>" : $value)
                         . "</td>";
                 $max .=  "<td class='smallFont'>"
                         . $data["max"][$key]

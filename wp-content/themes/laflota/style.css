@@ -345,10 +345,10 @@ aside{
 }
 
 #login_setion{
-	background: url(images/ingresar_fondo.png);
-	width: 330px;
-	height: 224px;
-	color: #333;
+    background: #C7C7C7 url(images/ingresar_fondo.png) repeat-x 0 0;
+    width: 330px;
+    height: 244px;
+    color: #333;
 }
 #login_setion, #capacitaciones_section{
     width: 100%;
@@ -1378,7 +1378,7 @@ table.head tr td {
 	font-family: 'Oswald', sans-serif !important;
 	font-weight: 300;
 	color: #FFF;
-	margin: 3px -25px 0;
+	margin: 23px -25px 0;
 	cursor: pointer;
 	font-size: 14px;
         text-align: center;
@@ -1402,4 +1402,19 @@ h3, .h3 {
 
 #wpadminbar {
     display: none;
+}
+
+#backMiFlota{
+    background: url(images/botonWebFlota.png) 0,0 no-repeat;
+    display:block;
+    width: 286px;
+    height: 34px;
+    margin: 0 auto;
+}
+
+#lostPwd{
+    display:block;
+    margin: 0 auto;
+    width: 130px;
+    color: #000;
 }

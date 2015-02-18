@@ -3,6 +3,13 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
+        <meta http-equiv="aceite, filtro, mantenimiento, tractomula, cambio de aceite, cambio de filtro, analisis de aciete" content="no-cache" />
+        <meta http-equiv="Cummins, mantenimiento preventivo, lubricacion, kenworth international, kenworth, navitrans, casa inglesa" content="no-cache" />
+        <meta http-equiv="detroit, reencauche, delco remy, conductor, chevron, gulf, mobil, shell " content="no-cache" />
+        <meta http-equiv="productividad, transporte, carga, transporte de carga, refrigerante" content="no-cache" />
+        <meta http-equiv="diferenciador, servicio, centro de servicio" content="no-cache" />
+        <meta http-equiv="Encuentre soluciones para mejorar la productividad de su camion" descripton="no-cache" />
+        
         <link rel="icon" href="<?php bloginfo('template_url')?>/images/favicon.ico" sizes="64x64">
         <link rel="stylesheet" type="text/css" href="<?php bloginfo('template_url')?>/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="<?php bloginfo('stylesheet_url')?>">

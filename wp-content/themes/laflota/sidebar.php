@@ -1,4 +1,7 @@
 <aside>
+    <?php if ( is_user_logged_in() ):?>
+    <a href="<?php echo get_permalink( get_page( 97 ) );?>" id="backMiFlota"></a>
+    <?php endif; ?>
     <section id="login_setion">
     <?php if ( is_user_logged_in() ):
         $current_user = wp_get_current_user();
@@ -35,6 +38,7 @@
         
         wp_login_form( $args );
         ?>
+        <a id="lostPwd" href="<?php echo wp_lostpassword_url(); ?>" title="Olvidó sucontraseña">¿Olvidó sucontraseña?</a>
     <?php endif;?>
     </section>
     <section id="direcciones">
@@ -46,8 +50,8 @@
                     <ul id="direcciones_info">
                         <div id="bogota">
                             <li>Av. Ciudad de Cali No. 11 - 22 <br/>Bogotá, Colombia</li><br /><br />
-                            <li>(57 1) 294 84 44 Ext. 4505 <br/>311 477 4645</li><br />
-                            <li>Ivon Ladino<br><a href="mailto:iladino@equitel.com.co"><b>iladino@equitel.com.co</b></a></li>
+                            <li>(57 1) 294 84 44 Ext. 4500 <br/>312 4647667</li><br />
+                            <li>Andrés Orjuela<br><a href="mailto:aorjuela@equitel.com.co"><b>aorjuela@equitel.com.co</b></a></li>
                         </div>
                         <div id="barranquilla">
                             <li>Km. 3 vía oriental, diagonal al Parque Industrial PIMSA <br/>Barranquilla, Colombia</li><br />

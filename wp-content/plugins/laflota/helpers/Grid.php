@@ -283,7 +283,7 @@ class Grid extends DBManager
     	$countCols = count($this->entity["atributes"]);
     	$j=1;
     	$k=1;
-    	$numCols = 2;
+    	$numCols = (array_key_exists("formCols", $this->entity["entityConfig"]))?$this->entity["entityConfig"]["formCols"]:2;
         $columnValidateEdit = "";
         
         if(array_key_exists("columnValidateEdit", $this->entity)){
@@ -332,7 +332,7 @@ class Grid extends DBManager
     				'editable' => (isset($value['editable']) && $value['editable'] == false)? false: true,
     				'editrules' => array('required' => $required),
     				'formoptions' => $option,
-    				'hidden' => (isset($value['hidden']) && $value['hidden'] == true)? true: false,
+    				'hidden' => (isset($value['hidden']) && $value['hidden'] === true)? true: false,
     				'classes'=> 'ellipsis'
     		);
                 if(array_key_exists('width', $value)){

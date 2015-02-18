@@ -262,3 +262,7 @@ button, input, optgroup, select, textarea {
 #criticasDiv{
     width: 8000% !important;
 }
+
+#FrmGrid_muestras> table.EditTable > tbody > tr.FormData > td.DataTD > input[type="text"] {
+    width: 95px !important;
+}
