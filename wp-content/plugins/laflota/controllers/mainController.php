@@ -3,15 +3,17 @@
 ini_set('display_errors', '1');*/
 class mainController //extends resources
 {
+    public $model;
+    
     private $pluginPath = "";
     private $pluginURL = "";
-    public $model;
     private $viewObject;
     private $prefix;
     private $PrefixPlugin;
     private $controllerName;
     private $headScripts = array();
     private $resource;
+    
     function __construct($controller = "basic", $showView = true) {
 
         global $prefixPlugin;

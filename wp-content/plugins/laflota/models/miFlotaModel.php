@@ -3,7 +3,19 @@
 ini_set('display_errors', '1');*/
 require_once('DBManagerModel.php');
 class miFlota extends DBManagerModel{
-   
+    public $domainReportAvailable = array();
+    
+    function __construct(){
+        parent::__construct();
+        $this->domainReportAvailable = array("http://app.cumandes.com/wp-admin/index.php"
+                                            ,"http://app.cumandes.com/wp-admin/"
+                                            ,"http://localhost/cumandes/wp-admin/index.php"
+                                            ,"http://localhost/cumandes/wp-admin/"
+                                            ,"http://intranet.equitel.com.co/cumandes/wp-admin/index.php"
+                                            ,"http://intranet.equitel.com.co/cumandes/wp-admin/"
+                                            );
+    }
+    
     public function getList($params = array()){
         $entity = $this->entity();
         $start = $params["limit"] * $params["page"] - $params["limit"];
@@ -240,8 +252,8 @@ class miFlota extends DBManagerModel{
         $query = "SELECT m.escritica
                     FROM ".$this->pluginPrefix."vehiculos v 
                         JOIN ".$this->pluginPrefix."muestras m ON m.vehiculoId = v.vehiculoId 
-                    WHERE v.vehiculoId = ".$id;
-        $result = $this->getDataGrid($query, 0, 6 , "m.muestraId", "DESC");
+                    WHERE v.vehiculoId = ".$id." AND m.tipoMuestraId IN (2,3)";
+        $result = $this->getDataGrid($query, 0, 1 , "m.muestraId", "DESC");
 
         $i = 0;
         foreach ($result["data"] as $key => $value){
@@ -252,12 +264,22 @@ class miFlota extends DBManagerModel{
         return $i;
     }
     
+    public function validateUser($valVehicle) {
+        if(!in_array($_SERVER["HTTP_REFERER"], $this->domainReportAvailable)){
+            global $isCurrentUserLoggedIn;
+            if($valVehicle)
+                $vehicleInCliente = $this->checkVehicleUser();
+            else
+                $vehicleInCliente = true;
+            $this->isCurrentUserLoggedIn = (function_exists ("is_user_logged_in"))?is_user_logged_in(): $isCurrentUserLoggedIn;
+            if($this->isCurrentUserLoggedIn == 0 || (!$vehicleInCliente && $this->currentUser->caps["administrator"] != 1))
+                exit($this->resource->getWord("noPermisos"));
+        }
+    }
     
     public function  getExtendedCriticalVehicles(){
-        global $isCurrentUserLoggedIn;
-        $this->isCurrentUserLoggedIn = (function_exists ("is_user_logged_in"))?is_user_logged_in(): $isCurrentUserLoggedIn;
-        if($this->isCurrentUserLoggedIn == 0)
-            exit($this->resource->getWord("noPermisos"));
+        
+        $this->validateUser();
         
         $condition = ($_POST["type"] == "user")? "cu.ID=".$this->currentUser->ID : "cu.clienteID = ".$_POST["filter"];
         
@@ -302,11 +324,7 @@ class miFlota extends DBManagerModel{
     }
     
     public function report(){
-        global $isCurrentUserLoggedIn;
-        $this->isCurrentUserLoggedIn = (function_exists ("is_user_logged_in"))?is_user_logged_in(): $isCurrentUserLoggedIn;
-        $vehicleInCliente = $this->checkVehicleUser();
-        if($this->isCurrentUserLoggedIn == 0 || (!$vehicleInCliente && $this->currentUser->caps["administrator"] != 1))
-            exit($this->resource->getWord("noPermisos"));
+        $this->validateUser(true);
         
         require_once($this->pluginPath.'/helpers/html2pdf/html2pdf.class.php');
         
