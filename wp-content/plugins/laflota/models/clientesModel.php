@@ -175,12 +175,17 @@ class clientes extends DBManagerModel{
                                         )f ON f.clientesUploadId = u.clientesUploadId
                                         JOIN ". $this->pluginPrefix ."ciudades ci ON ci.ciudad = u.ciudad
                                         JOIN ". $this->pluginPrefix ."tipousuario t ON t.tipoUsuario = u.tipousuario
-                                        JOIN ". $this->pluginPrefix ."comerciales co ON co.comercial = u.comercial";break;
+                                        JOIN ". $this->pluginPrefix ."comerciales co ON co.comercial = u.comercial";
                     $this->conn->query($query);
-                    $query = "INSERT INTO `". $this->pluginPrefix ."clientesUsuarios`(clienteId, ID)" 
-                            . "SELECT clienteId,ID "
-                            . " FROM ".$this->wpPrefix ."users u"
-                            . "     JOIN ".$entity["tableName"]."clientes c on c.cedulaNit = u.user_login";
+                    $query = "INSERT INTO `". $this->pluginPrefix ."clientesUsuarios`(clienteId, ID, date_entered, created_by)
+                                SELECT c.clienteId , u.ID, c.date_entered, c.created_by 
+                                        FROM ". $this->pluginPrefix ."clientes c
+                                                 JOIN ".$this->wpPrefix ."users u ON u.user_login = c.cedulaNit
+                                        WHERE NOT EXISTS(
+                                                            SELECT 1 FROM ". $this->pluginPrefix ."clientesUsuarios cu 
+                                                            WHERE cu.clienteId = c.clienteId
+                                                        );";
+                    break;
             case "clientesUpdate":
                     $query = "UPDATE ". $this->pluginPrefix ."clientes c
                                 JOIN (

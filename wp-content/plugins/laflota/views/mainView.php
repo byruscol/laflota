@@ -83,8 +83,11 @@ class laFlota_Shortcode {
                     wp_register_style( 'bootstrapThemeCss', plugins_url('../css/bootstrap-theme.min.css', __FILE__));
                     wp_enqueue_style( 'bootstrapThemeCss' );
                     
-                    wp_register_style( 'flexslider', plugins_url('../css/flexslider.css', __FILE__));
-                    wp_enqueue_style( 'flexslider' );
+                    /*wp_register_style( 'flexslider', plugins_url('../css/flexslider.css', __FILE__));
+                    wp_enqueue_style( 'flexslider' );*/
+                    
+                    wp_register_style( 'jcarousel', plugins_url('../css/jcarousel.css', __FILE__));
+                    wp_enqueue_style( 'jcarousel' );
                     
                     wp_register_style( 'uiCss', plugins_url('../css/jqGrid/themes/ui-lightness/jquery-ui.min.css', __FILE__));
                     wp_enqueue_style( 'uiCss' );
@@ -102,9 +105,15 @@ class laFlota_Shortcode {
                     wp_register_script('jqGrid', plugins_url('../js/jqGrid/jquery.jqGrid.src.js', __FILE__), array('jquery'), '1.0', true);
                     wp_enqueue_script('jqGrid');
 
-                    wp_register_script('flexslider', plugins_url('../js/jquery.flexslider-min.js', __FILE__), array('jquery'), '1.0', true);
-                    wp_enqueue_script( 'flexslider' );
+                    /*wp_register_script('flexslider', plugins_url('../js/jquery.flexslider-min.js', __FILE__), array('jquery'), '1.0', true);
+                    wp_enqueue_script( 'flexslider' );*/
         
+                    wp_register_script('jCarouselSkeleton', plugins_url('../js/jcarousel.skeleton.js', __FILE__), array('jquery'), '1.0', true);
+                    wp_enqueue_script( 'jCarouselSkeleton' );
+                    
+                    wp_register_script('jCarousel', plugins_url('../js/jquery.jcarousel.min.js', __FILE__), array('jquery'), '1.0', true);
+                    wp_enqueue_script( 'jCarousel' );
+                    
                     wp_register_script('pluginjs', plugins_url('../js/pluginjs.js', __FILE__), array('jquery'), '1.0', true);
                     wp_enqueue_script('pluginjs');
 

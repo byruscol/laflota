@@ -203,6 +203,16 @@ button, input, optgroup, select, textarea {
     width: 280px;
 }
 
+#scroll_placas {
+    height: 115px;
+}
+
+#scroll_placas h4, #scroll_placas2 h4 {
+    float: left;
+    margin: 15px 0 0 15px;
+    text-align: center;
+}
+
 #placasCriticas{
     width: 620px;
 }
@@ -249,14 +259,16 @@ button, input, optgroup, select, textarea {
     display: block !important;
 }
 
-.aPlaca {
-    float: left;
-    margin: 15px 0 0 15px;
+.aPlaca h4{
     text-align: center;
     font-size: 16px;
     font-family: Arial,helvetica;
     color: #551A8B !important;
     font-weight: bold;
+}
+
+.aPlaca h4 span{
+    font-size: 13px;
 }
 
 #criticasDiv{
@@ -265,4 +277,53 @@ button, input, optgroup, select, textarea {
 
 #FrmGrid_muestras> table.EditTable > tbody > tr.FormData > td.DataTD > input[type="text"] {
     width: 95px !important;
+}
+
+.k_placa {
+    background: rgba(0, 0, 0, 0) url("../images/k_placa.png") repeat scroll 0 0;
+    height: 50px;
+    margin-top: 52px;
+    width: 96px !important;
+}
+
+.jcarousel-control-prev, .jcarousel-control-next {
+    background: rgba(0, 0, 0, 0) url("../images/slider_flechas.png") repeat scroll 0 0;
+    display: block;
+    font-size: 0;
+    height: 20px !important;
+    opacity: 1 !important;
+    position: relative;
+    top: 100% !important;
+    transition: none 0s ease 0s !important;
+    width: 20px !important;
+    z-index: 1000;
+}
+
+.jcarousel-control-prev {
+    float: left;
+}
+
+.jcarousel-control-next {
+    background-position: right top;
+    float: right;
+}
+
+.k_placa {
+    background: rgba(0, 0, 0, 0) url("../images/k_placa.png") repeat scroll 0 0;
+    height: 50px;
+    margin-top: 52px;
+    width: 96px !important;
+}
+
+.controls {
+    position: relative;
+    top: -20px;
+    width: 96.8%;
+    clear: both;
+}
+
+#largeModal {
+    clear: both;
+    position: relative;
+    top: 50px;
 }

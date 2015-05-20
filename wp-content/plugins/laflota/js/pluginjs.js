@@ -122,7 +122,7 @@ function enableElements(el) {
 function searchDataByPlaca(e) {
     var val = "";
     if(jQuery("#"+this.id).attr("class") == "aPlaca")
-        val = jQuery("#"+this.id).text();
+        val = jQuery("#"+this.id).find("h4").first().text();
     else
         val = jQuery("#placaInput").val();
     filters = '';
@@ -151,7 +151,7 @@ function extendedCritial(response){
                             title: jsonObj["criticas"][xx].Q,
                             name: jsonObj["criticas"][xx].placa,
                             id: jsonObj["criticas"][xx].placa,
-                            html: jsonObj["criticas"][xx].placa,
+                            html: "<h4>"+jsonObj["criticas"][xx].placa+"</h4>",
                             class: "aPlaca"
                         }).bind('click',searchDataByPlaca).appendTo(li);
     }
@@ -164,25 +164,18 @@ function extendedCritial(response){
 
         var aaa = jQuery('<a/>', {
                             href: '#',
-                            title: jsonObj["extendidas"][xx].kilometraje,
                             name: jsonObj["extendidas"][xx].placa,
                             id: jsonObj["extendidas"][xx].placa,
-                            html: jsonObj["extendidas"][xx].placa,
+                            html: "<h4>"+jsonObj["extendidas"][xx].placa+"</h4>",
                             class: "aPlaca"
                         }).bind('click',searchDataByPlaca).appendTo(li);
+        
+        var km = jQuery('<div/>', {
+                            name: jsonObj["extendidas"][xx].placa+"_km",
+                            id: jsonObj["extendidas"][xx].placa+"_km",
+                            html: " <h4>"+jsonObj["extendidas"][xx].kilometraje+" <span>Km</span></h4>",
+                            class: "k_placa"
+                        }).appendTo(aaa);
     }
+    jcInit();
 }
-
-jQuery(window).load(function() {
-    jQuery('.flexslider').flexslider({
-            animation: "slide",
-            animationLoop: false,
-            controlNav: false,
-            directionNav: true,
-            itemWidth: 96,
-            itemMargin: 5,
-            prevText: "",           //String: Set the text for the "previous" directionNav item
-            nextText: "",
-            slideshow: false
-    });
-});

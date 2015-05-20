@@ -1234,30 +1234,24 @@ img{
 	font-family: 'Oswald', sans-serif !important;
 }
 
-#scroll_placas{
-	background: #C7C7C7;
-	width: 280px;
-	height: 65px;
-	float: left;
-	border: none !important;
-	padding: 10px;
-	border-radius: 0 !important;
-	-webkit-border-radius: 0 !important;
-	-moz-border-radius: 0 !important;
-	
+#scroll_placas, #scroll_placas2 {
+    background: none repeat scroll 0 0 #c7c7c7;
+    border: medium none !important;
+    border-radius: 0 !important;
+    float: left;
+    height: 65px;
+    padding: 10px;
+    width: 280px;
+}
+
+#scroll_placas {
+    height: 115px;
 }
 
 .placa{
 	background: url(images/placa.png);
 	width: 96px !important;
 	height: 50px;
-}
-
-
-#scroll_placas h4{
-	text-align: center;
-	float: left;
-	margin: 15px 0 0 15px;
 }
 
 .flexslider .flex-direction-nav a.flex-prev,
@@ -1417,4 +1411,24 @@ h3, .h3 {
     margin: 0 auto;
     width: 130px;
     color: #000;
+}
+
+.k_placa {
+    background: rgba(0, 0, 0, 0) url("../images/k_placa.png") repeat scroll 0 0;
+    height: 50px;
+    margin-top: 52px;
+    width: 96px !important;
+}
+
+.jcarousel-control-prev, .jcarousel-control-next {
+    background: rgba(0, 0, 0, 0) url("../images/slider_flechas.png") repeat scroll 0 0;
+    display: block;
+    font-size: 0;
+    height: 20px !important;
+    opacity: 1 !important;
+    position: relative;
+    top: 100% !important;
+    transition: none 0s ease 0s !important;
+    width: 20px !important;
+    z-index: 1000;
 }

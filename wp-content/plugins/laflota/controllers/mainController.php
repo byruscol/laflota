@@ -85,15 +85,16 @@ class mainController //extends resources
         wp_enqueue_style( 'uiCss' );
         wp_register_style( 'gridCss', $this->pluginURL . 'css/jqGrid/ui.jqgrid.css');
         wp_enqueue_style( 'gridCss' );
-        wp_register_style( 'flexslider', $this->pluginURL . 'css/flexslider.css');
-        wp_enqueue_style( 'flexslider' );
+        /*wp_register_style( 'flexslider', $this->pluginURL . 'css/flexslider.css');
+        wp_enqueue_style( 'flexslider' );*/
         wp_register_style( 'pluginCss', $this->pluginURL . 'css/plugincss.css');
         wp_enqueue_style( 'pluginCss' );
         wp_register_style( 'normalizeCss', $this->pluginURL . 'css/normalize.css');
         wp_enqueue_style( 'normalizeCss' );
         wp_register_style( 'datepickerCss', $this->pluginURL . 'css/datepicker.css');
         wp_enqueue_style( 'datepickerCss' );
-
+        wp_register_style( 'jcarousel', $this->pluginURL . 'css/jcarousel.css');
+        wp_enqueue_style( 'jcarousel' );
         $this->headScripts[] = 'jquery';
         
         /*wp_register_script('latestJquery', 'http://code.jquery.com/jquery-latest.min.js', $this->headScripts);
@@ -156,10 +157,18 @@ class mainController //extends resources
 	wp_enqueue_script( 'bootstrap-datepicker' );
 		
 	$this->headScripts[] = 'bootstrap-datepicker';
-        wp_register_script('flexslider', $this->pluginURL . 'js/jquery.flexslider-min.js',$this->headScripts);
+        wp_register_script('jCarouselSkeleton', $this->pluginURL . 'js/jcarousel.skeleton.js',$this->headScripts);
+	wp_enqueue_script( 'jCarouselSkeleton' );
+        
+        $this->headScripts[] = 'jCarouselSkeleton';
+        wp_register_script('jCarousel', $this->pluginURL . 'js/jquery.jcarousel.min.js',$this->headScripts);
+	wp_enqueue_script( 'jCarousel' );
+        
+        $this->headScripts[] = 'jCarousel';
+        /*wp_register_script('flexslider', $this->pluginURL . 'js/jquery.flexslider-min.js',$this->headScripts);
 	wp_enqueue_script( 'flexslider' );
 		
-	$this->headScripts[] = 'flexslider';
+	$this->headScripts[] = 'flexslider';*/
     }
 
     function viewJSScripts() {

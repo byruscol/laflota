@@ -3193,7 +3193,7 @@ msgstr "Ya no es necesario incluir este archivo."
 
 #: wp-login.php:522
 msgid "Please enter your username or email address. You will receive a link to create a new password via email."
-msgstr "Por favor, escribe tu nombre de usuario o tu correo electrónico. Recibirás un enlace para crear la contraseña nueva por correo electrónico."
+msgstr "Por favor, escriba su nombre de usuario o tu correo electrónico. Recibirá un enlace para crear la contraseña nueva por correo electrónico."
 
 #: wp-includes/default-widgets.php:353 wp-includes/default-widgets.php:633
 msgid "Display as dropdown"
