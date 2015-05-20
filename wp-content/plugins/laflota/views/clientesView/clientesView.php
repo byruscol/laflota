@@ -1,3 +1,10 @@
+<?php
+$user = wp_get_current_user();
+    $currentUserRoles = (array) $user->roles;
+    $user = wp_get_current_user();
+$currentUserRoles = (array) $user->roles;
+$adminRoleAllow = array("administrator");
+?>
 <div class="row-fluid">
     <div class="row-fluid">
         <form id="uploadFiles" class="form-inline" enctype="multipart/form-data" method="post">
@@ -31,6 +38,9 @@
     </div>
     <br/>
     <div class="span12"></div>
+    <?php 
+    if( array_intersect($adminRoleAllow, $currentUserRoles ) ):
+    ?>
     <div id="tabs" class="span11">
         <ul id="optionsTab" class="nav nav-tabs">
             <li class="active"><a href="#vehiculosTab" data-toggle="tab"><?php echo $resource->getWord("vehiculos"); ?></a></li>
@@ -53,6 +63,7 @@
             </div>
         </div>
     </div> 
+    <?php    endif;?>
 </div>
 
 <div id="loading"><p><?php echo $resource->getWord("LoadingFile"); ?></p></div>

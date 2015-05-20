@@ -267,12 +267,16 @@ class miFlota extends DBManagerModel{
     public function validateUser($valVehicle) {
         if(!in_array($_SERVER["HTTP_REFERER"], $this->domainReportAvailable)){
             global $isCurrentUserLoggedIn;
+            
+            $currentUserRoles = (array) $this->currentUser->roles;
+            $rolesAllowed = array("administrator","contributor");
+            
             if($valVehicle)
                 $vehicleInCliente = $this->checkVehicleUser();
             else
                 $vehicleInCliente = true;
             $this->isCurrentUserLoggedIn = (function_exists ("is_user_logged_in"))?is_user_logged_in(): $isCurrentUserLoggedIn;
-            if($this->isCurrentUserLoggedIn == 0 || (!$vehicleInCliente && $this->currentUser->caps["administrator"] != 1))
+            if($this->isCurrentUserLoggedIn == 0 || (!$vehicleInCliente && !array_intersect($rolesAllowed, $currentUserRoles )))
                 exit($this->resource->getWord("noPermisos"));
         }
     }
