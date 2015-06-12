@@ -326,4 +326,5 @@ button, input, optgroup, select, textarea {
     clear: both;
     position: relative;
     top: 50px;
+    height: 600px;
 }

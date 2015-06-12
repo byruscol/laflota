@@ -29,6 +29,7 @@
                     <a href="http://www.ingenergia.com.co/" target="_blank"><img src="<?php bloginfo('template_url')?>/images/inge.png" /></a>
                     <a href="http://www.lapinternational.com.co/" target="_blank"><img src="<?php bloginfo('template_url')?>/images/lap.png" /></a>
 		</div>
+                <div id="habeas"><a href="<?php bloginfo('template_url')?>/habeas/aviso.pdf" target="_blank">Aviso de privacidad</a> | <a href="<?php bloginfo('template_url')?>/habeas/politica.pdf" target="_blank">Política de datos</a></div>
                 <div id="logo_c3"><a href="http://www.c3comunicaciones.com/" target="_blank"><img src="<?php bloginfo('template_url')?>/images/logo-c3.png" alt="Marca de agua C3"/></a></div>
             </div>
         </footer>
